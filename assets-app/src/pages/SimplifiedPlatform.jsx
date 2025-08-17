@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Routes, Route, useParams, useSearchParams, Navigate } from 'react-router-dom';
+import { Routes, Route, useParams, useSearchParams, Navigate, useLocation } from 'react-router-dom';
 import { authService } from '../services/authService';
 import { FeatureFlagProvider } from '../contexts/FeatureFlagContext';
 import { UserIntelligenceProvider } from '../contexts/simplified/UserIntelligenceContext';
 import PlatformSwitcher from '../components/platform-switcher/PlatformSwitcher';
+import ModernSidebarLayout from '../components/layout/ModernSidebarLayout';
 import SimplifiedDashboard from '../components/simplified/SimplifiedDashboard';
+import SimplifiedDashboardPremium from '../components/simplified/SimplifiedDashboardPremium';
 import SimplifiedICP from '../components/simplified/SimplifiedICP';
 import SimplifiedFinancialImpact from '../components/simplified/SimplifiedFinancialImpact';
 import SimplifiedResourceLibrary from '../components/simplified/SimplifiedResourceLibrary';
@@ -13,9 +15,21 @@ import ErrorBoundary from '../components/common/ErrorBoundary';
 const SimplifiedPlatform = () => {
   const { customerId } = useParams();
   const [searchParams] = useSearchParams();
+  const location = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Get current active route for sidebar navigation
+  const getActiveRoute = () => {
+    const path = location.pathname;
+    if (path.includes('dashboard-premium')) return 'dashboard-premium';
+    if (path.includes('dashboard')) return 'dashboard';
+    if (path.includes('icp')) return 'icp';
+    if (path.includes('financial')) return 'financial';
+    if (path.includes('resources')) return 'resources';
+    return 'dashboard';
+  };
 
   useEffect(() => {
     const validateAccess = async () => {
@@ -92,19 +106,24 @@ const SimplifiedPlatform = () => {
       <FeatureFlagProvider customerId={customerId}>
         <UserIntelligenceProvider customerId={customerId}>
           <div className="relative">
-            {/* Platform Switcher */}
-            <PlatformSwitcher customerId={customerId} />
+            {/* Platform Switcher - positioned over modern layout */}
+            <div className="fixed top-4 right-4 z-50">
+              <PlatformSwitcher customerId={customerId} />
+            </div>
             
-            {/* Simplified Platform Routes */}
-            <Routes>
-              <Route path="dashboard" element={<SimplifiedDashboard customerId={customerId} />} />
-              <Route path="icp" element={<SimplifiedICP customerId={customerId} />} />
-              <Route path="financial" element={<SimplifiedFinancialImpact customerId={customerId} />} />
-              <Route path="resources" element={<SimplifiedResourceLibrary customerId={customerId} />} />
-              
-              {/* Default redirect to dashboard */}
-              <Route path="*" element={<Navigate to="dashboard" replace />} />
-            </Routes>
+            {/* Modern Sidebar Layout wrapping all routes */}
+            <ModernSidebarLayout customerId={customerId} activeRoute={getActiveRoute()}>
+              <Routes>
+                <Route path="dashboard" element={<SimplifiedDashboard customerId={customerId} />} />
+                <Route path="dashboard-premium" element={<SimplifiedDashboardPremium customerId={customerId} />} />
+                <Route path="icp" element={<SimplifiedICP customerId={customerId} />} />
+                <Route path="financial" element={<SimplifiedFinancialImpact customerId={customerId} />} />
+                <Route path="resources" element={<SimplifiedResourceLibrary customerId={customerId} />} />
+                
+                {/* Default redirect to dashboard */}
+                <Route path="*" element={<Navigate to="dashboard" replace />} />
+              </Routes>
+            </ModernSidebarLayout>
           </div>
         </UserIntelligenceProvider>
       </FeatureFlagProvider>

@@ -6,6 +6,7 @@ import Phase1Test from './Phase1Test';
 import Phase4Test from './Phase4Test';
 import WelcomeExperienceTest from './WelcomeExperienceTest';
 import SimplifiedPlatformTest from './SimplifiedPlatformTest';
+import PremiumDashboardTest from './PremiumDashboardTest';
 
 const TestLauncher = () => {
   const [activeTest, setActiveTest] = useState(null);
@@ -59,6 +60,14 @@ const TestLauncher = () => {
       component: SimplifiedPlatformTest,
       priority: 'critical',
       estimatedTime: '8 minutes'
+    },
+    {
+      id: 'premium-dashboard',
+      name: 'Premium Dashboard - Phase 1',
+      description: 'Test Phase 1: Foundation & Layout with 4-column grid and card components',
+      component: PremiumDashboardTest,
+      priority: 'high',
+      estimatedTime: '5 minutes'
     }
   ];
 

@@ -10,6 +10,8 @@ import AssessmentContextTest from './components/test/AssessmentContextTest';
 import CompetencyDashboardTest from './components/test/CompetencyDashboardTest';
 import SimplifiedPlatformTest from './components/test/SimplifiedPlatformTest';
 import Phase3ExportTest from './components/test/Phase3ExportTest';
+import PremiumDashboardTest from './components/test/PremiumDashboardTest';
+import SimplifiedDashboardPremiumTest from './components/test/SimplifiedDashboardPremiumTest';
 import testEnvironmentVariables from './utils/testEnv';
 
 function App() {
@@ -45,6 +47,8 @@ function App() {
             <Route path="/test-competency" element={<CompetencyDashboardTest />} />
             <Route path="/test-simplified" element={<SimplifiedPlatformTest />} />
             <Route path="/test-phase3" element={<Phase3ExportTest />} />
+            <Route path="/test-premium" element={<PremiumDashboardTest />} />
+            <Route path="/test-premium-dashboard" element={<SimplifiedDashboardPremiumTest />} />
             
             {/* Default - redirect to simplified platform */}
             <Route path="*" element={<SimplifiedPlatform />} />

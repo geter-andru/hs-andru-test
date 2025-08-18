@@ -1,20 +1,58 @@
+# Netlify Configuration for hs-platform Staging
+# This deploys the Next.js frontend from hs-platform/frontend
+
 [build]
-  functions = "netlify/functions"
+  base = "hs-platform/frontend"
+  publish = "out"
+  command = "npm run build"
 
 [build.environment]
   NODE_VERSION = "18"
+  NEXT_TELEMETRY_DISABLED = "1"
 
+# Enable Next.js production features
+[build.processing]
+  skip_processing = false
+
+# Essential functions for Next.js
+[functions]
+  directory = "hs-platform/frontend/.next/server/pages/api"
+
+# Redirects for Next.js routing
 [[redirects]]
-  from = "/customer/*"
-  to = "/assets-app/index.html"
+  from = "/_next/static/*"
+  to = "/.next/static/:splat"
   status = 200
 
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# Customer routes
+[[redirects]]
+  from = "/customer/*"
+  to = "/customer/:splat"
+  status = 200
+
+# Catch-all for Next.js
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
+# Security headers
 [[headers]]
   for = "/*"
   [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+[[headers]]
+  for = "/api/*"
+  [headers.values]
     Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"

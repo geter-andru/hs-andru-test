@@ -12,6 +12,10 @@ import SimplifiedPlatformTest from './components/test/SimplifiedPlatformTest';
 import Phase3ExportTest from './components/test/Phase3ExportTest';
 import PremiumDashboardTest from './components/test/PremiumDashboardTest';
 import SimplifiedDashboardPremiumTest from './components/test/SimplifiedDashboardPremiumTest';
+import SarahChenWorkflowTestRunner from './components/test/SarahChenWorkflowTestRunner';
+import Phase4IntegrationTest from './components/test/Phase4IntegrationTest';
+import Phase5SystemTest from './components/test/Phase5SystemTest';
+import SarahChenUserJourneyTest from './components/test/SarahChenUserJourneyTest';
 import testEnvironmentVariables from './utils/testEnv';
 
 function App() {
@@ -49,6 +53,10 @@ function App() {
             <Route path="/test-phase3" element={<Phase3ExportTest />} />
             <Route path="/test-premium" element={<PremiumDashboardTest />} />
             <Route path="/test-premium-dashboard" element={<SimplifiedDashboardPremiumTest />} />
+            <Route path="/test-sarah-chen" element={<SarahChenWorkflowTestRunner />} />
+            <Route path="/test-phase4" element={<Phase4IntegrationTest />} />
+            <Route path="/test-phase5" element={<Phase5SystemTest />} />
+            <Route path="/test-sarah-journey" element={<SarahChenUserJourneyTest />} />
             
             {/* Default - redirect to simplified platform */}
             <Route path="*" element={<SimplifiedPlatform />} />

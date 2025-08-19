@@ -9,9 +9,6 @@ import WeeklyProgressWidget from './cards/WeeklyProgressWidget';
 import UsageAnalyticsWidget from './cards/UsageAnalyticsWidget';
 import MilestoneTrackerWidget from './cards/MilestoneTrackerWidget';
 import RecentActivityFeed from './cards/RecentActivityFeed';
-import QuickActionsGrid from './cards/QuickActionsGrid';
-import TechnicalTranslationWidget from './cards/TechnicalTranslationWidget';
-import StakeholderArsenalWidget from './cards/StakeholderArsenalWidget';
 import SeriesAContextWidget from './cards/SeriesAContextWidget';
 import ModernCard, { ModernGridContainer, ModernCardHeader, ModernCardContent, ModernMetricCard } from '../layout/ModernCard';
 import ModernCircularProgress, { ModernProgressGroup } from '../ui/ModernCircularProgress';
@@ -224,24 +221,12 @@ const SimplifiedDashboardPremium = ({ customerId }) => {
             </ModernCardContent>
           </ModernCard>
         </div>
-        {/* Row 2: Technical Translation & Business Context */}
-        <div className="sm:col-span-1 lg:col-span-2">
-          <ModernCard size="medium" variant="highlighted" padding="default">
-            <ModernCardHeader 
-              title="Technical Translation" 
-              subtitle="Transform metrics into business language"
-            />
-            <ModernCardContent>
-              <TechnicalTranslationWidget />
-            </ModernCardContent>
-          </ModernCard>
-        </div>
-
-        <div className="sm:col-span-1 lg:col-span-2">
+        {/* Row 2: Business Context - expanded to take more space */}
+        <div className="sm:col-span-2 lg:col-span-4">
           <ModernCard size="medium" padding="default">
             <ModernCardHeader 
               title="Business Context" 
-              subtitle="Series A stage intelligence"
+              subtitle="Series A stage intelligence and market positioning"
             />
             <ModernCardContent>
               <SeriesAContextWidget />
@@ -249,20 +234,8 @@ const SimplifiedDashboardPremium = ({ customerId }) => {
           </ModernCard>
         </div>
 
-        {/* Row 3: Stakeholder Arsenal */}
-        <div className="sm:col-span-2 lg:col-span-3">
-          <ModernCard size="medium" variant="highlighted" padding="default">
-            <ModernCardHeader 
-              title="Stakeholder Arsenal" 
-              subtitle="Role-specific preparation for customer calls"
-            />
-            <ModernCardContent>
-              <StakeholderArsenalWidget />
-            </ModernCardContent>
-          </ModernCard>
-        </div>
-
-        <div className="sm:col-span-2 lg:col-span-1">
+        {/* Row 3: Weekly Progress & Activity */}
+        <div className="sm:col-span-1 lg:col-span-2">
           <ModernMetricCard
             title="Weekly Progress"
             value={`${safeUsage.weeklyTasksCompleted}/${safeUsage.weeklyTasksTotal}`}
@@ -270,6 +243,18 @@ const SimplifiedDashboardPremium = ({ customerId }) => {
             change="+25%"
             changeType="positive"
           />
+        </div>
+
+        <div className="sm:col-span-1 lg:col-span-2">
+          <ModernCard size="medium" padding="default">
+            <ModernCardHeader 
+              title="Recent Activity" 
+              subtitle="Your latest platform interactions"
+            />
+            <ModernCardContent>
+              <RecentActivityFeed />
+            </ModernCardContent>
+          </ModernCard>
         </div>
 
         {/* Row 4: Revenue Metrics */}
@@ -298,10 +283,13 @@ const SimplifiedDashboardPremium = ({ customerId }) => {
         />
 
         <div className="sm:col-span-2 lg:col-span-1">
-          <ModernCard size="small" padding="compact">
-            <ModernCardHeader title="Quick Actions" />
+          <ModernCard size="medium" padding="default">
+            <ModernCardHeader 
+              title="Usage Analytics" 
+              subtitle="Platform engagement and tool utilization"
+            />
             <ModernCardContent>
-              <QuickActionsGrid />
+              <UsageAnalyticsWidget />
             </ModernCardContent>
           </ModernCard>
         </div>

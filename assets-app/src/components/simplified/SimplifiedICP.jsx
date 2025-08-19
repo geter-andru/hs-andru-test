@@ -17,6 +17,10 @@ import {
 } from 'lucide-react';
 import { useUserIntelligence } from '../../contexts/simplified/UserIntelligenceContext';
 import ICPFrameworkDisplay from '../tools/ICPFrameworkDisplay';
+import TechnicalTranslationWidget from './cards/TechnicalTranslationWidget';
+import StakeholderArsenalWidget from './cards/StakeholderArsenalWidget';
+import ProductInputSection from './cards/ProductInputSection';
+import SalesSageResourcesSection from './cards/SalesSageResourcesSection';
 
 const SimplifiedICP = ({ customerId }) => {
   const navigate = useNavigate();
@@ -26,6 +30,10 @@ const SimplifiedICP = ({ customerId }) => {
   const [isRating, setIsRating] = useState(false);
   const [icpFramework, setIcpFramework] = useState(null);
   const [activeSection, setActiveSection] = useState('framework');
+  const [productData, setProductData] = useState(null);
+  const [customerData, setCustomerData] = useState({
+    salesSageResources: null // Will be populated when resources are generated
+  });
   
   // Usage tracking refs
   const startTimeRef = useRef(Date.now());
@@ -82,6 +90,12 @@ const SimplifiedICP = ({ customerId }) => {
     
     return guides[milestone?.tier] || guides.foundation;
   }, [milestone]);
+
+  // Handle framework updates
+  const handleFrameworkUpdate = useCallback((framework) => {
+    setIcpFramework(framework);
+    trackClick('update_framework');
+  }, [trackClick]);
 
   // Handle company rating
   const handleRateCompany = useCallback(() => {
@@ -303,6 +317,19 @@ const SimplifiedICP = ({ customerId }) => {
           >
             Rate Company
           </button>
+          <button
+            onClick={() => {
+              setActiveSection('generate');
+              trackClick('view_generate');
+            }}
+            className={`px-4 py-2 rounded-lg font-medium transition-all ${
+              activeSection === 'generate'
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-900 text-gray-400 hover:text-white'
+            }`}
+          >
+            Generate Resources
+          </button>
         </div>
 
         {/* Main Content */}
@@ -310,10 +337,7 @@ const SimplifiedICP = ({ customerId }) => {
           <div className="space-y-6">
             <ICPFrameworkDisplay 
               customerData={{ icpFramework }}
-              onFrameworkUpdate={(framework) => {
-                setIcpFramework(framework);
-                trackClick('update_framework');
-              }}
+              onFrameworkUpdate={handleFrameworkUpdate}
             />
             
             {/* Quick Tips */}
@@ -542,6 +566,62 @@ const SimplifiedICP = ({ customerId }) => {
             </div>
           </div>
         )}
+
+        {activeSection === 'generate' && (
+          <div className="space-y-6">
+            {/* Product Input Section */}
+            <ProductInputSection 
+              customerId={customerId}
+              onProductSubmit={(data) => {
+                setProductData(data);
+                updateUsage({
+                  lastResourceGeneration: Date.now(),
+                  resourceGenerationCount: (usage?.resourceGenerationCount || 0) + 1
+                });
+              }}
+            />
+            
+            {/* Sales Sage Resources Section */}
+            <SalesSageResourcesSection 
+              customerData={customerData}
+            />
+          </div>
+        )}
+
+        {/* Intelligence Widgets Section - moved from dashboard */}
+        <div className="mt-8 space-y-6">
+          <div className="flex items-center gap-2 mb-6">
+            <Lightbulb className="w-5 h-5 text-yellow-400" />
+            <h2 className="text-xl font-bold text-white">Customer Intelligence Tools</h2>
+            <p className="text-gray-400 text-sm ml-2">Transform insights into actionable strategies</p>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Technical Translation Widget */}
+            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <Zap className="w-5 h-5 text-blue-400" />
+                <div>
+                  <h3 className="text-lg font-semibold text-white">Technical Translation</h3>
+                  <p className="text-gray-400 text-sm">Transform metrics into business language</p>
+                </div>
+              </div>
+              <TechnicalTranslationWidget />
+            </div>
+
+            {/* Stakeholder Arsenal Widget */}
+            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <Users className="w-5 h-5 text-green-400" />
+                <div>
+                  <h3 className="text-lg font-semibold text-white">Stakeholder Arsenal</h3>
+                  <p className="text-gray-400 text-sm">Role-specific preparation for customer calls</p>
+                </div>
+              </div>
+              <StakeholderArsenalWidget />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

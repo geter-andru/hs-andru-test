@@ -13,21 +13,38 @@ import {
   FileText,
   ArrowUp,
   CheckCircle,
-  Activity
+  Activity,
+  Star,
+  Trophy
 } from 'lucide-react';
 import { useUserIntelligence } from '../../contexts/simplified/UserIntelligenceContext';
+import { useBehavioralTracking, useSkillAssessment, useProgressiveFeatures } from '../../hooks';
 import TaskRecommendationsSection from './TaskRecommendationsSection';
 
 const SimplifiedDashboard = ({ customerId }) => {
   const navigate = useNavigate();
   const { assessment, milestone, usage, loading, error, updateUsage } = useUserIntelligence();
+  
+  // Behavioral Intelligence Integration
+  const { trackAction, trackToolSequence, trackSectionTime } = useBehavioralTracking('dashboard', customerId);
+  const { skillLevels, competencyLevel, isLoading: skillsLoading } = useSkillAssessment(customerId);
+  const { 
+    hasFeature, 
+    professionalMilestones,
+    acknowledgeMilestone,
+    shouldShowProfessionalMilestones,
+    getSidebarContent,
+    getContextualGuidance,
+    toolComplexity
+  } = useProgressiveFeatures(customerId, competencyLevel, skillLevels);
+  
   const [animatedScores, setAnimatedScores] = useState({
     customerAnalysis: 0,
     valueCommunication: 0,
     executiveReadiness: 0
   });
 
-  // Animate competency scores on mount
+  // Animate competency scores on mount and track dashboard view
   useEffect(() => {
     if (!assessment?.competencyScores) return;
     
@@ -35,8 +52,22 @@ const SimplifiedDashboard = ({ customerId }) => {
       setAnimatedScores(assessment.competencyScores);
     }, 100);
     
-    return () => clearTimeout(timer);
-  }, [assessment]);
+    // Track dashboard view behavior
+    trackAction('dashboard_view', {
+      sessionStart: Date.now(),
+      competencyScores: assessment.competencyScores,
+      milestoneContext: milestone?.tier,
+      userContext: 'simplified_dashboard'
+    });
+    
+    // Start section timing for competency overview
+    const sectionTimer = trackSectionTime('competency_overview');
+    
+    return () => {
+      clearTimeout(timer);
+      if (sectionTimer) sectionTimer(); // End section timing
+    };
+  }, [assessment, milestone, trackAction, trackSectionTime]);
 
   // Ensure we have safe competency scores for rendering
   const safeCompetencyScores = assessment?.competencyScores || {
@@ -222,7 +253,7 @@ const SimplifiedDashboard = ({ customerId }) => {
     return milestoneMap[milestone?.tier] || milestoneMap.foundation;
   }, [milestone]);
 
-  // Handle task completion with usage tracking
+  // Handle task completion with usage tracking and behavioral intelligence
   const handleTaskCompletion = useCallback((task, completionData) => {
     // Update usage data with task completion
     updateUsage({
@@ -237,7 +268,22 @@ const SimplifiedDashboard = ({ customerId }) => {
         [task.category]: (usage?.completedTaskCategories?.[task.category] || 0) + 1
       }
     });
-  }, [updateUsage, usage]);
+    
+    // Track behavioral intelligence on task completion
+    trackAction('task_completion', {
+      taskId: task.id,
+      taskTitle: task.title,
+      competencyArea: task.competencyArea,
+      competencyGain: completionData.competencyGain,
+      priorityLevel: task.priority,
+      toolUsed: task.tool,
+      completionTime: Date.now(),
+      sessionContext: 'simplified_dashboard'
+    });
+    
+    // Record tool sequence for systematic methodology analysis
+    trackToolSequence(task.tool, 'task_completion');
+  }, [updateUsage, usage, trackAction, trackToolSequence]);
 
   if (loading) {
     return (
@@ -424,7 +470,16 @@ const SimplifiedDashboard = ({ customerId }) => {
                 {recommendedActions.slice(0, 3).map((action) => (
                   <button
                     key={action.id}
-                    onClick={() => navigate(`/customer/${customerId}/simplified/${action.tool}`)}
+                    onClick={() => {
+                      trackAction(`quick_action_click`, {
+                        toolName: action.tool,
+                        actionTitle: action.title,
+                        priority: action.priority,
+                        completionTime: Date.now()
+                      });
+                      trackToolSequence(action.tool, 'dashboard');
+                      navigate(`/customer/${customerId}/simplified/${action.tool}`);
+                    }}
                     className="w-full text-left p-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors group text-sm"
                   >
                     <div className="flex items-center justify-between">
@@ -444,7 +499,16 @@ const SimplifiedDashboard = ({ customerId }) => {
         {/* Quick Actions */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
           <button
-            onClick={() => navigate(`/customer/${customerId}/simplified/icp`)}
+            onClick={() => {
+              trackAction('main_tool_navigation', {
+                destinationTool: 'icp',
+                interactionType: 'primary_navigation_card',
+                sourceContext: 'quick_actions_grid',
+                completionTime: Date.now()
+              });
+              trackToolSequence('icp', 'dashboard');
+              navigate(`/customer/${customerId}/simplified/icp`);
+            }}
             className="p-4 bg-gray-900 border border-gray-800 hover:border-blue-500 rounded-xl transition-all group"
           >
             <Target className="w-6 h-6 text-blue-400 mb-2" />
@@ -453,7 +517,16 @@ const SimplifiedDashboard = ({ customerId }) => {
           </button>
 
           <button
-            onClick={() => navigate(`/customer/${customerId}/simplified/financial`)}
+            onClick={() => {
+              trackAction('main_tool_navigation', {
+                destinationTool: 'financial',
+                interactionType: 'primary_navigation_card',
+                sourceContext: 'quick_actions_grid',
+                completionTime: Date.now()
+              });
+              trackToolSequence('financial', 'dashboard');
+              navigate(`/customer/${customerId}/simplified/financial`);
+            }}
             className="p-4 bg-gray-900 border border-gray-800 hover:border-green-500 rounded-xl transition-all group"
           >
             <BarChart3 className="w-6 h-6 text-green-400 mb-2" />
@@ -462,7 +535,16 @@ const SimplifiedDashboard = ({ customerId }) => {
           </button>
 
           <button
-            onClick={() => navigate(`/customer/${customerId}/simplified/resources`)}
+            onClick={() => {
+              trackAction('main_tool_navigation', {
+                destinationTool: 'resources',
+                interactionType: 'primary_navigation_card',
+                sourceContext: 'quick_actions_grid',
+                completionTime: Date.now()
+              });
+              trackToolSequence('resources', 'dashboard');
+              navigate(`/customer/${customerId}/simplified/resources`);
+            }}
             className="p-4 bg-gray-900 border border-gray-800 hover:border-purple-500 rounded-xl transition-all group"
           >
             <FileText className="w-6 h-6 text-purple-400 mb-2" />

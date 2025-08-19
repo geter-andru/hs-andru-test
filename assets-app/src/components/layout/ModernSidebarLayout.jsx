@@ -15,6 +15,8 @@ import {
   Menu,
   X
 } from 'lucide-react';
+import QuickActionsGrid from '../simplified/cards/QuickActionsGrid';
+import MilestoneTrackerWidget from '../simplified/cards/MilestoneTrackerWidget';
 
 /**
  * ModernSidebarLayout - Professional SaaS interface with fixed sidebar navigation
@@ -232,7 +234,7 @@ const ModernSidebarLayout = ({ children, customerId, activeRoute = 'dashboard' }
           </div>
 
           {/* Navigation Items */}
-          <nav className="flex-1 py-4 space-y-1">
+          <nav className="py-4 space-y-1">
             {navigationItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeRoute === item.id;
@@ -273,6 +275,37 @@ const ModernSidebarLayout = ({ children, customerId, activeRoute = 'dashboard' }
               );
             })}
           </nav>
+
+          {/* Milestone Tracker Section - positioned right after navigation */}
+          {!sidebarCollapsed && (
+            <div className="px-4 pb-4 border-b border-gray-800">
+              <div className="mb-3">
+                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
+                  Progress Tracking
+                </h3>
+              </div>
+              <div className="max-h-60 overflow-y-auto">
+                <MilestoneTrackerWidget />
+              </div>
+            </div>
+          )}
+
+          {/* Quick Actions Section - positioned right after milestone tracker */}
+          {!sidebarCollapsed && (
+            <div className="px-4 pb-4 border-b border-gray-800">
+              <div className="mb-3">
+                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
+                  Quick Actions
+                </h3>
+              </div>
+              <div className="max-h-80 overflow-y-auto">
+                <QuickActionsGrid className="space-y-1" />
+              </div>
+            </div>
+          )}
+
+          {/* Flexible spacer to push footer to bottom */}
+          <div className="flex-1"></div>
 
           {/* Sidebar Footer */}
           <div className="p-4 border-t border-gray-800">

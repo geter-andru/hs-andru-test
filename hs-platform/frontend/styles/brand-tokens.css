@@ -82,10 +82,11 @@
   --color-info-bg: #dbeafe;
   
   /* Background Colors */
-  --bg-primary: var(--color-gray-50);
-  --bg-secondary: var(--color-gray-100);
-  --bg-dark: var(--color-gray-900);
-  --bg-darker: var(--color-gray-950);
+  --bg-primary: #0f172a;      /* slate-900 - main background */
+  --bg-secondary: #1e293b;    /* slate-800 - card background */
+  --bg-tertiary: #334155;     /* slate-700 - section background */
+  --bg-dark: #0a0a0a;         /* pure black - like assessment */
+  --bg-darker: #000000;       /* absolute black */
   
   /* Text Colors */
   --text-primary: #ffffff;        /* white - for headers */

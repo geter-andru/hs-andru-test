@@ -11,7 +11,7 @@ module.exports = {
         // Background Colors (Dark Theme)
         background: {
           primary: '#0a0a0a',      // --color-background-primary
-          secondary: '#111111',    // --color-background-secondary  
+          secondary: '#111111',    // --color-background-secondary
           tertiary: '#1a1a1a',     // --color-background-tertiary
           elevated: '#222222',     // --color-background-elevated
         },
@@ -20,13 +20,13 @@ module.exports = {
           hover: '#333333',        // --color-surface-hover
         },
         
-        // Text Colors (Dark Theme)
+        // Text Colors (Dark Theme) - Matching Design Tokens
         text: {
-          primary: '#ffffff',      // --color-text-primary
-          secondary: '#e5e5e5',    // --color-text-secondary
-          muted: '#a3a3a3',        // --color-text-muted
-          subtle: '#737373',       // --color-text-subtle
-          disabled: '#525252',     // --color-text-disabled
+          primary: '#ffffff',      // --text-heading/--text-primary
+          secondary: '#e2e8f0',    // --text-body/--text-secondary (slate-200)
+          muted: '#94a3b8',        // --text-muted (slate-400)
+          subtle: '#64748b',       // --text-dim (slate-500)
+          disabled: '#475569',     // slate-600
         },
         
         // Professional Brand Colors
@@ -59,7 +59,7 @@ module.exports = {
           50: '#eff6ff',
           100: '#dbeafe',
           500: '#3b82f6',
-          600: '#2563eb', 
+          600: '#2563eb',
           700: '#1d4ed8',
           900: '#1e3a8a'
         },
@@ -126,7 +126,7 @@ module.exports = {
       
       transitionDuration: {
         'fast': '150ms',     // --transition-fast (0.15s)
-        'normal': '250ms',   // --transition-normal (0.25s) 
+        'normal': '250ms',   // --transition-normal (0.25s)
         'slow': '400ms',     // --transition-slow (0.4s)
       },
       
@@ -148,7 +148,6 @@ module.exports = {
       
       animation: {
         'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
-        'rocket-pulse': 'rocketPulse 2s ease-in-out infinite',
         'shimmer': 'shimmer 2.5s ease-in-out infinite',
         'checkmark-appear': 'checkmarkAppear 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards',
         'question-fade-in': 'questionFadeIn 0.6s ease-out forwards',
@@ -163,24 +162,6 @@ module.exports = {
           'to': {
             opacity: '1',
             transform: 'translateY(0)'
-          }
-        },
-        rocketPulse: {
-          '0%, 100%': { 
-            transform: 'scale(1) rotate(0deg)',
-            filter: 'drop-shadow(0 0 5px rgba(6, 182, 212, 0.3))'
-          },
-          '25%': {
-            transform: 'scale(1.05) rotate(1deg)',
-            filter: 'drop-shadow(0 0 15px rgba(6, 182, 212, 0.5))'
-          },
-          '50%': { 
-            transform: 'scale(1.1) rotate(2deg)',
-            filter: 'drop-shadow(0 0 20px rgba(6, 182, 212, 0.7))'
-          },
-          '75%': {
-            transform: 'scale(1.05) rotate(1deg)',
-            filter: 'drop-shadow(0 0 15px rgba(6, 182, 212, 0.5))'
           }
         },
         shimmer: {

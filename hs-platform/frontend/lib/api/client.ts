@@ -83,12 +83,42 @@ apiClient.interceptors.response.use(
   }
 );
 
-// Auth functions
+// Mock customer data for static export
+const MOCK_CUSTOMERS = {
+  'CUST_2': {
+    id: 'CUST_2',
+    name: 'Demo Customer',
+    email: 'demo@example.com',
+    status: 'active'
+  },
+  'CUST_4': {
+    id: 'CUST_4',
+    name: 'Admin Demo',
+    email: 'admin@example.com',
+    status: 'admin'
+  }
+};
+
+// Auth functions - Modified for static export
 export const auth = {
   async login(customerId: string): Promise<{ success: boolean; data?: any; error?: string }> {
     try {
-      const response = await apiClient.post('/api/auth/token', { customerId });
-      const { accessToken, refreshToken, customer } = response.data.data;
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Check if customer exists in mock data
+      const customer = MOCK_CUSTOMERS[customerId as keyof typeof MOCK_CUSTOMERS];
+      
+      if (!customer) {
+        return {
+          success: false,
+          error: 'Customer not found. Please check your Customer ID.'
+        };
+      }
+      
+      // Generate mock tokens
+      const accessToken = `mock_token_${customerId}_${Date.now()}`;
+      const refreshToken = `mock_refresh_${customerId}_${Date.now()}`;
       
       // Store tokens in cookies
       Cookies.set(TOKEN_COOKIE_NAME, accessToken, { expires: 1 });
@@ -99,7 +129,7 @@ export const auth = {
     } catch (error: any) {
       return { 
         success: false, 
-        error: error.response?.data?.error || 'Login failed' 
+        error: 'Login failed. Please try again.' 
       };
     }
   },

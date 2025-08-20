@@ -1,45 +1,40 @@
-# Netlify Configuration for hs-platform Staging
-# This deploys the Next.js frontend from hs-platform/frontend
+# Netlify Configuration for H&S Platform
+# This deploys the React app from assets-app (advanced enterprise platform)
 
 [build]
-  base = "hs-platform/frontend"
-  publish = "out"
+  base = "assets-app"
+  publish = "build"
   command = "npm run build"
 
 [build.environment]
   NODE_VERSION = "18"
-  NEXT_TELEMETRY_DISABLED = "1"
 
-# Enable Next.js production features
-[build.processing]
-  skip_processing = false
-
-# Essential functions for Next.js
-[functions]
-  directory = "hs-platform/frontend/.next/server/pages/api"
-
-# Redirects for Next.js routing
-[[redirects]]
-  from = "/_next/static/*"
-  to = "/.next/static/:splat"
-  status = 200
-
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-
-# Customer routes
-[[redirects]]
-  from = "/customer/*"
-  to = "/customer/:splat"
-  status = 200
-
-# Catch-all for Next.js
+# React SPA routing - catch-all redirect
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+
+# Cache static assets
+[[headers]]
+  for = "/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
 
 # Security headers
 [[headers]]
@@ -51,8 +46,6 @@
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
 
 [[headers]]
-  for = "/api/*"
+  for = "/*"
   [headers.values]
-    Access-Control-Allow-Origin = "*"
-    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
-    Access-Control-Allow-Headers = "Content-Type, Authorization"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.airtable.com https://hook.us1.make.com;"

@@ -20,8 +20,12 @@
     "no-mock-data-check": "npm run validate:no-mock",
     "create:component": "./scripts/create-component.sh",
     "create:feature": "./scripts/create-feature.sh",
+    "generate:feature": "node tools/generators/create-feature.js",
+    "generate:component": "node tools/generators/create-component.js",
+    "validate:structure": "node tools/validators/structure-check.js",
     "validate:data": "node scripts/validate-data.js",
-    "audit-code": "npm run no-jsx-check && npm run no-mock-data-check && npm run structure-check && npm run validate:data",
+    "analyze:dependencies": "node tools/analyzers/dependency-mapper.js",
+    "audit-code": "npm run no-jsx-check && npm run no-mock-data-check && npm run structure-check && npm run validate:structure && npm run validate:data",
     "pre-commit": "npm run validate:all",
     "prepare": "husky install",
     "fix": "next lint --fix && prettier --write 'app/**/*.{ts,tsx}' 'lib/**/*.{ts,tsx}'"

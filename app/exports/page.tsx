@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/lib/api/client';
-import { DashboardLayout } from '@/app/components/layout/DashboardLayout';
-import { ExportCenter } from '@/app/components/dashboard/ExportCenter';
+import { DashboardLayout } from '@/src/shared/components/layout/DashboardLayout';
+import { ExportCenter } from '@/src/features/dashboard/ExportCenter';
 
 export default function ExportsPage() {
   const router = useRouter();

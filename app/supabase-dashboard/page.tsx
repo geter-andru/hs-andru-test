@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase, getCurrentUser } from '@/lib/supabase/client';
-import { LoadingSpinner } from '@/app/components/ui/LoadingStates';
+import { LoadingSpinner } from '@/src/shared/components/ui/LoadingStates';
 
 export default function SupabaseDashboard() {
   const [user, setUser] = useState<any>(null);

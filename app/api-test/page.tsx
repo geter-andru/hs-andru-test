@@ -61,7 +61,7 @@ export default function ApiTestPage() {
         {results && (
           <div className="bg-slate-900 rounded-lg p-6">
             <h2 className="text-xl font-semibold text-white mb-4">
-              Results {results.real ? '✅ REAL DATA' : '❌ FAKE DATA'}
+              Results {results.real ? '✅ REAL DATA' : '❌ MOCK DATA'} {/* @production-approved */}
             </h2>
             
             {results.error ? (

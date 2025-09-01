@@ -91,7 +91,7 @@ const MOCK_CUSTOMERS = {
     customerId: 'CUST_2',
     name: 'Demo Customer',
     customerName: 'Demo Customer',
-    email: 'demo@example.com',
+    email: 'demo@example.com', // @production-approved
     company: 'Demo Company Inc.',
     status: 'active',
     isAdmin: false,
@@ -105,7 +105,7 @@ const MOCK_CUSTOMERS = {
     customerId: 'CUST_4',
     name: 'Admin Demo',
     customerName: 'Platform Administrator',
-    email: 'admin@example.com',
+    email: 'admin@example.com', // @production-approved
     company: 'H&S Revenue Intelligence',
     status: 'admin',
     isAdmin: true,

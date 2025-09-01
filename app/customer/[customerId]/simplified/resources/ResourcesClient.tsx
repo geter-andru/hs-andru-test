@@ -3,11 +3,11 @@
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import ModernSidebarLayout from '@/app/components/layout/ModernSidebarLayout';
-import { SystematicScalingProvider } from '@/app/contexts/SystematicScalingContext';
+import ModernSidebarLayout from '@/src/shared/components/layout/ModernSidebarLayout';
+import { SystematicScalingProvider } from '@/src/shared/contexts/SystematicScalingContext';
 
 // Dynamic import of ResourceLibrary to reduce initial bundle size
-const ResourceLibrary = dynamic(() => import('@/app/components/resources/ResourceLibrary'), {
+const ResourceLibrary = dynamic(() => import('@/src/features/resources-library').then(mod => ({ default: mod.ResourceLibrary })), {
   loading: () => (
     <div className="flex items-center justify-center p-12">
       <div className="flex flex-col items-center space-y-4">

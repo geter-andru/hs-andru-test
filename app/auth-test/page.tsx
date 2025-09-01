@@ -3,7 +3,7 @@
 // Simple authentication test page
 import React from 'react';
 import { useSupabaseAuth } from '../../lib/hooks/useSupabaseAuth';
-import { LoadingSpinner } from '@/app/components/ui/LoadingStates';
+import { LoadingSpinner } from '@/src/shared/components/ui/LoadingStates';
 
 const AuthTestPage: React.FC = () => {
   const { user, session, loading, error, signOut, signInWithGoogle } = useSupabaseAuth();

@@ -3,10 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { unifiedAuth } from '@/lib/auth/unified-auth';
-import { DashboardLayout } from '@/app/components/layout/DashboardLayout';
-import { ICPAnalysisForm } from '@/app/components/icp/ICPAnalysisForm';
-import { ICPResults } from '@/app/components/icp/ICPResults';
-import { ICPHistory } from '@/app/components/icp/ICPHistory';
+import { DashboardLayout } from '@/src/shared/components/layout/DashboardLayout';
+import { ICPAnalysisForm, ICPResults, ICPHistory } from '@/src/features/icp-analysis';
 import { useCustomerICP, useTrackAction } from '@/lib/hooks/useAPI';
 
 export default function ICPPage() {

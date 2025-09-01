@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/lib/api/client';
-import DashboardLayout from '@/app/components/layout/DashboardLayout';
-import AdvancedAnalyticsDashboard from '@/app/components/analytics/AdvancedAnalyticsDashboard';
+import DashboardLayout from '@/src/shared/components/layout/DashboardLayout';
+import { RevenueIntelligenceDashboard } from '@/src/features/dashboard';
 
 export default function AnalyticsPage() {
   const router = useRouter();
@@ -59,7 +59,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Advanced Analytics Dashboard */}
-        <AdvancedAnalyticsDashboard customerId={customerId} />
+        <RevenueIntelligenceDashboard customerId={customerId} />
       </div>
     </DashboardLayout>
   );

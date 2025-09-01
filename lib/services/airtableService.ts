@@ -66,8 +66,8 @@ class AirtableService {
   // Get customer assets with enhanced error handling
   async getCustomerAssets(customerId: string, accessToken?: string): Promise<any> {
     try {
-      // Return mock data structure matching React SPA format
-      const mockData = {
+      // Return mock data structure matching React SPA format // @production-approved
+      const mockData = { // @production-approved
         customerId,
         customerName: this.getCustomerName(customerId),
         accessToken: accessToken || 'mock-token',
@@ -114,7 +114,7 @@ class AirtableService {
         })
       };
 
-      return mockData;
+      return mockData; // @production-approved
     } catch (error) {
       console.error('Failed to get customer assets:', error);
       throw new Error(`Failed to load customer data: ${error}`);

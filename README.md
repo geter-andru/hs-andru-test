@@ -1,13 +1,22 @@
 # H&S Platform - Next.js Frontend
 
+## ⚠️ MANDATORY DEVELOPMENT PATTERNS ⚠️
+**ALL DEVELOPERS MUST FOLLOW THE PATTERNS IN [MANDATORY_PATTERNS.md](./MANDATORY_PATTERNS.md)**
+
+Violations will:
+- ❌ Block commits
+- ❌ Block builds  
+- ❌ Block deployments
+- ❌ Be tracked and reported
+
 ## Overview
 Enterprise-grade Next.js 15 + TypeScript implementation of the H&S Revenue Intelligence Platform. This is the production-ready frontend designed for scalability and performance.
 
 ## 🎯 Status: Next.js Production Platform
 - **Framework**: Next.js 15 with App Router
-- **Language**: TypeScript for type safety
+- **Language**: TypeScript for type safety (NO JavaScript allowed)
 - **Deployment Target**: Production environment
-- **Relationship**: Alternative to React SPA (`assets-app`) with enterprise features
+- **Code Quality**: Enforced via automated guardrails
 
 ## Key Features
 - **Enterprise Dashboard**: Advanced analytics and business intelligence
@@ -47,6 +56,11 @@ Enterprise-grade Next.js 15 + TypeScript implementation of the H&S Revenue Intel
    ```bash
    git clone https://github.com/geter-andru/hs-andru-v1.git
    cd hs-andru-v1
+   ```
+
+2. **MANDATORY: Read the patterns guide**
+   ```bash
+   cat MANDATORY_PATTERNS.md  # READ THIS FIRST!
    ```
 
 2. **Install frontend dependencies**

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { unifiedAuth } from '@/lib/auth/unified-auth';
-import SimplifiedCostCalculator from '@/app/components/cost-calculator/SimplifiedCostCalculator';
+import { SimplifiedCostCalculator } from '@/src/features/cost-business-case';
 
 export default function CostCalculatorPage() {
   const router = useRouter();

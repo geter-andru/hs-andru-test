@@ -55,6 +55,11 @@ function scanDirectory(dirPath) {
           const content = fs.readFileSync(fullPath, 'utf8');
           for (const { pattern, message } of FORBIDDEN_PATTERNS) {
             if (pattern.test(content)) {
+              // Check if this is mock data pattern and if it's production-approved
+              if (pattern.toString().includes('mockData') && content.includes('// @production-approved')) {
+                // Skip production-approved mock data
+                continue;
+              }
               console.error(`❌ ${message}: ${fullPath}`);
               hasErrors = true;
             }

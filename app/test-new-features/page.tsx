@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ModernCard } from '@/app/components/ui/ModernCard';
-import TechnicalTranslator from '@/app/components/tools/TechnicalTranslator';
-import StakeholderArsenal from '@/app/components/tools/StakeholderArsenal';
+import { ModernCard } from '@/src/shared/components/ui';
+// Note: TechnicalTranslator and StakeholderArsenal components not found in migrated structure
+// These may need to be created or moved from archived components if needed
 import exportService, { ExportFormat } from '@/app/lib/services/exportService';
 import {
   Brain,
@@ -313,19 +313,23 @@ Scalable architecture supporting 10x growth with 65% reduction in technical debt
         )}
 
         {activeMode === 'technical-translator' && (
-          <TechnicalTranslator
-            customerId={testCustomerData.customerId}
-            customerData={testCustomerData}
-            productData={testProductData}
-          />
+          <ModernCard className="p-8">
+            <div className="text-center">
+              <Brain className="w-16 h-16 text-blue-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-white mb-2">Technical Translator</h3>
+              <p className="text-gray-400">Component needs to be migrated from archived structure</p>
+            </div>
+          </ModernCard>
         )}
 
         {activeMode === 'stakeholder-arsenal' && (
-          <StakeholderArsenal
-            customerId={testCustomerData.customerId}
-            customerData={testCustomerData}
-            productData={testProductData}
-          />
+          <ModernCard className="p-8">
+            <div className="text-center">
+              <Users className="w-16 h-16 text-green-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-white mb-2">Stakeholder Arsenal</h3>
+              <p className="text-gray-400">Component needs to be migrated from archived structure</p>
+            </div>
+          </ModernCard>
         )}
 
         {activeMode === 'export-test' && (

@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import ProductInputSection from '@/app/components/resources/ProductInputSection';
-import { ModernCard } from '@/app/components/ui/ModernCard';
+import { ProductInputSection } from '@/src/features/resources-library';
+import { ModernCard } from '@/src/shared/components/ui';
 import { 
   Target,
   Users,

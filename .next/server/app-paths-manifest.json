@@ -1,5 +1,0 @@
-{
-  "/api/progress/[customerId]/route": "app/api/progress/[customerId]/route.js",
-  "/customer/[customerId]/simplified/icp/page": "app/customer/[customerId]/simplified/icp/page.js",
-  "/customer/[customerId]/simplified/dashboard/page": "app/customer/[customerId]/simplified/dashboard/page.js"
-}

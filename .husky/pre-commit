@@ -1,0 +1,31 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "🔍 Running code quality checks..."
+
+# Check 1: No JSX files
+if find . -name "*.jsx" -not -path "./node_modules/*" | grep -q .; then
+  echo "❌ JSX files found! Use .tsx instead:"
+  find . -name "*.jsx" -not -path "./node_modules/*"
+  exit 1
+fi
+
+# Check 2: No mock data
+if grep -r "mockData\|MOCK_DATA\|fake.*data" app/ lib/ --include="*.tsx" --include="*.ts" 2>/dev/null; then
+  echo "❌ Mock data found! Implement real data fetching."
+  exit 1
+fi
+
+# Check 3: TypeScript compilation
+if ! npm run type-check; then
+  echo "❌ TypeScript errors found! Fix them before committing."
+  exit 1
+fi
+
+# Check 4: ESLint
+if ! npm run lint; then
+  echo "❌ Linting errors found! Fix them before committing."
+  exit 1
+fi
+
+echo "✅ All checks passed!"

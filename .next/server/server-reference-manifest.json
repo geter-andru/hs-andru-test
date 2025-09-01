@@ -1,0 +1,50 @@
+{
+  "node": {
+    "7f39d685f5d19c4b2caaf785ba734e0f69dcb570ea": {
+      "workers": {
+        "app/customer/[customerId]/simplified/dashboard/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fgeter%2Fandru%2Fhs-andru-test%2Fmodern-platform%2Fapp%2Flib%2Fservices%2FcustomerValueOrchestrator.ts%22%2C%5B%7B%22id%22%3A%227f39d685f5d19c4b2caaf785ba734e0f69dcb570ea%22%2C%22exportedName%22%3A%22customerValueOrchestrator%22%7D%5D%5D%2C%5B%22%2FUsers%2Fgeter%2Fandru%2Fhs-andru-test%2Fmodern-platform%2Fapp%2Flib%2Fservices%2FcompetencyService.ts%22%2C%5B%7B%22id%22%3A%227f0d915c97a3255fc10cb3a1bb9bc224ef6c9a306a%22%2C%22exportedName%22%3A%22competencyService%22%7D%5D%5D%2C%5B%22%2FUsers%2Fgeter%2Fandru%2Fhs-andru-test%2Fmodern-platform%2Fapp%2Flib%2Fservices%2FbehavioralIntelligenceService.ts%22%2C%5B%7B%22id%22%3A%227fad2a6abc5484d98e144cffc4cbe88b16d051ba4f%22%2C%22exportedName%22%3A%22behavioralIntelligenceService%22%7D%5D%5D%2C%5B%22%2FUsers%2Fgeter%2Fandru%2Fhs-andru-test%2Fmodern-platform%2Fapp%2Flib%2Fservices%2FagentOrchestrationService.ts%22%2C%5B%7B%22id%22%3A%227fc22af18067b1de8e8b76188ebda346198e99fe26%22%2C%22exportedName%22%3A%22agentOrchestrationService%22%7D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/customer/[customerId]/simplified/dashboard/page": "action-browser"
+      }
+    },
+    "7f0d915c97a3255fc10cb3a1bb9bc224ef6c9a306a": {
+      "workers": {
+        "app/customer/[customerId]/simplified/dashboard/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fgeter%2Fandru%2Fhs-andru-test%2Fmodern-platform%2Fapp%2Flib%2Fservices%2FcustomerValueOrchestrator.ts%22%2C%5B%7B%22id%22%3A%227f39d685f5d19c4b2caaf785ba734e0f69dcb570ea%22%2C%22exportedName%22%3A%22customerValueOrchestrator%22%7D%5D%5D%2C%5B%22%2FUsers%2Fgeter%2Fandru%2Fhs-andru-test%2Fmodern-platform%2Fapp%2Flib%2Fservices%2FcompetencyService.ts%22%2C%5B%7B%22id%22%3A%227f0d915c97a3255fc10cb3a1bb9bc224ef6c9a306a%22%2C%22exportedName%22%3A%22competencyService%22%7D%5D%5D%2C%5B%22%2FUsers%2Fgeter%2Fandru%2Fhs-andru-test%2Fmodern-platform%2Fapp%2Flib%2Fservices%2FbehavioralIntelligenceService.ts%22%2C%5B%7B%22id%22%3A%227fad2a6abc5484d98e144cffc4cbe88b16d051ba4f%22%2C%22exportedName%22%3A%22behavioralIntelligenceService%22%7D%5D%5D%2C%5B%22%2FUsers%2Fgeter%2Fandru%2Fhs-andru-test%2Fmodern-platform%2Fapp%2Flib%2Fservices%2FagentOrchestrationService.ts%22%2C%5B%7B%22id%22%3A%227fc22af18067b1de8e8b76188ebda346198e99fe26%22%2C%22exportedName%22%3A%22agentOrchestrationService%22%7D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/customer/[customerId]/simplified/dashboard/page": "action-browser"
+      }
+    },
+    "7fad2a6abc5484d98e144cffc4cbe88b16d051ba4f": {
+      "workers": {
+        "app/customer/[customerId]/simplified/dashboard/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fgeter%2Fandru%2Fhs-andru-test%2Fmodern-platform%2Fapp%2Flib%2Fservices%2FcustomerValueOrchestrator.ts%22%2C%5B%7B%22id%22%3A%227f39d685f5d19c4b2caaf785ba734e0f69dcb570ea%22%2C%22exportedName%22%3A%22customerValueOrchestrator%22%7D%5D%5D%2C%5B%22%2FUsers%2Fgeter%2Fandru%2Fhs-andru-test%2Fmodern-platform%2Fapp%2Flib%2Fservices%2FcompetencyService.ts%22%2C%5B%7B%22id%22%3A%227f0d915c97a3255fc10cb3a1bb9bc224ef6c9a306a%22%2C%22exportedName%22%3A%22competencyService%22%7D%5D%5D%2C%5B%22%2FUsers%2Fgeter%2Fandru%2Fhs-andru-test%2Fmodern-platform%2Fapp%2Flib%2Fservices%2FbehavioralIntelligenceService.ts%22%2C%5B%7B%22id%22%3A%227fad2a6abc5484d98e144cffc4cbe88b16d051ba4f%22%2C%22exportedName%22%3A%22behavioralIntelligenceService%22%7D%5D%5D%2C%5B%22%2FUsers%2Fgeter%2Fandru%2Fhs-andru-test%2Fmodern-platform%2Fapp%2Flib%2Fservices%2FagentOrchestrationService.ts%22%2C%5B%7B%22id%22%3A%227fc22af18067b1de8e8b76188ebda346198e99fe26%22%2C%22exportedName%22%3A%22agentOrchestrationService%22%7D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/customer/[customerId]/simplified/dashboard/page": "action-browser"
+      }
+    },
+    "7fc22af18067b1de8e8b76188ebda346198e99fe26": {
+      "workers": {
+        "app/customer/[customerId]/simplified/dashboard/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fgeter%2Fandru%2Fhs-andru-test%2Fmodern-platform%2Fapp%2Flib%2Fservices%2FcustomerValueOrchestrator.ts%22%2C%5B%7B%22id%22%3A%227f39d685f5d19c4b2caaf785ba734e0f69dcb570ea%22%2C%22exportedName%22%3A%22customerValueOrchestrator%22%7D%5D%5D%2C%5B%22%2FUsers%2Fgeter%2Fandru%2Fhs-andru-test%2Fmodern-platform%2Fapp%2Flib%2Fservices%2FcompetencyService.ts%22%2C%5B%7B%22id%22%3A%227f0d915c97a3255fc10cb3a1bb9bc224ef6c9a306a%22%2C%22exportedName%22%3A%22competencyService%22%7D%5D%5D%2C%5B%22%2FUsers%2Fgeter%2Fandru%2Fhs-andru-test%2Fmodern-platform%2Fapp%2Flib%2Fservices%2FbehavioralIntelligenceService.ts%22%2C%5B%7B%22id%22%3A%227fad2a6abc5484d98e144cffc4cbe88b16d051ba4f%22%2C%22exportedName%22%3A%22behavioralIntelligenceService%22%7D%5D%5D%2C%5B%22%2FUsers%2Fgeter%2Fandru%2Fhs-andru-test%2Fmodern-platform%2Fapp%2Flib%2Fservices%2FagentOrchestrationService.ts%22%2C%5B%7B%22id%22%3A%227fc22af18067b1de8e8b76188ebda346198e99fe26%22%2C%22exportedName%22%3A%22agentOrchestrationService%22%7D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/customer/[customerId]/simplified/dashboard/page": "action-browser"
+      }
+    }
+  },
+  "edge": {},
+  "encryptionKey": "OyQ//9VFb3JlHcpcDceqWVKgzI9t8Ly4pF4Qtpbmhu0="
+}

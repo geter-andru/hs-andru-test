@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: hs-platform-backend
+    env: node
+    plan: starter
+    buildCommand: npm install && npm run build:server
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: ANTHROPIC_API_KEY
+        sync: false  # Set this manually in Render dashboard
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        value: https://molcqjsqtjbfclasynpg.supabase.co
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false  # Set this manually in Render dashboard
+      - key: FRONTEND_URL
+        sync: false  # Set to your Netlify frontend URL
+    autoDeploy: true
+    disk:
+      name: backend-storage
+      mountPath: /opt/render/project/storage
+      sizeGB: 1
+    scaling:
+      minInstances: 1
+      maxInstances: 2
+      targetMemoryPercent: 80
+      targetCPUPercent: 70

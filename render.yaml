@@ -3,6 +3,7 @@ services:
     name: hs-platform-backend
     env: node
     plan: starter
+    rootDir: modern-platform
     buildCommand: npm install && npm run build:server
     startCommand: npm start
     healthCheckPath: /health

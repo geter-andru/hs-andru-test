@@ -20,11 +20,13 @@ services:
         sync: false  # Set this manually in Render dashboard
       - key: FRONTEND_URL
         sync: false  # Set to your Netlify frontend URL
+      - key: STORAGE_PATH
+        value: /opt/render/project/storage
     autoDeploy: true
     disk:
       name: backend-storage
       mountPath: /opt/render/project/storage
-      sizeGB: 1
+      sizeGB: 2
     scaling:
       minInstances: 1
       maxInstances: 2

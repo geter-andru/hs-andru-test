@@ -4,9 +4,10 @@ services:
     env: node
     plan: starter
     rootDir: hs-andru-test/modern-platform
-    buildCommand: npm install
+    buildCommand: npm ci
     startCommand: npm start
     healthCheckPath: /api/health
+    autoDeploy: true
     envVars:
       - key: NODE_ENV
         value: production

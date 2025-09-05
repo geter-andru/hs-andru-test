@@ -210,7 +210,7 @@ const StakeholderRelationshipMap: React.FC<StakeholderRelationshipMapProps> = ({
       const avgEngagement = roleStakeholders.length > 0
         ? roleStakeholders.reduce((sum, s) => sum + s.engagement_score, 0) / roleStakeholders.length
         : 0;
-      coverage[role] = avgEngagement;
+      (coverage as any)[role] = avgEngagement;
     });
     
     return coverage as Coverage;

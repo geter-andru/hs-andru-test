@@ -35,24 +35,33 @@ interface Activity {
   category?: string
   type: string
   impactLevel: string
-  [key: string]: any
+  [key: string]: unknown
 }
 
 interface NextUnlock {
   pointsNeeded: number
-  [key: string]: any
+  [key: string]: unknown
 }
 
 interface WeeklySummary {
-  [key: string]: any
+  [key: string]: unknown
 }
 
 interface DevelopmentFocus {
   currentLevel: string
   nextUnlock?: NextUnlock
-  recommendations?: any[]
-  recentMilestones?: any[]
-  [key: string]: any
+  recommendations?: string[]
+  recentMilestones?: MilestoneData[]
+  [key: string]: unknown
+}
+
+interface MilestoneData {
+  id: string
+  title: string
+  description: string
+  achieved: boolean
+  achievedAt?: string
+  points: number
 }
 
 interface AssessmentData {
@@ -104,8 +113,8 @@ interface DashboardData {
   weeklySummary: WeeklySummary
   developmentFocus: DevelopmentFocus
   assessmentData?: AssessmentData
-  competencyBaselines?: any
-  personalizedRecommendations?: any[]
+  competencyBaselines?: Record<string, number>
+  personalizedRecommendations?: string[]
   personalizedMessaging?: {
     tone: string
   }
@@ -407,9 +416,9 @@ const ProfessionalDashboard: React.FC<ProfessionalDashboardProps> = ({
   }
 
   // Phase 5: Handle development session start (Stealth Gamification)
-  const handleStartDevelopmentSession = (recommendation: any = null) => {
+  const handleStartDevelopmentSession = (recommendation: string | null = null) => {
     if (recommendation) {
-      console.log('Starting recommended development session:', recommendation.title)
+      console.log('Starting recommended development session:', recommendation)
     } else {
       console.log('Starting professional development session...')
     }

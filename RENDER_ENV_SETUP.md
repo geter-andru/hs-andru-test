@@ -12,8 +12,9 @@ PORT=10000
 
 ### Claude AI Service (CRITICAL)
 ```
-ANTHROPIC_API_KEY=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
+ANTHROPIC_API_KEY=placeholder_key_here
 ```
+**Note:** Set this manually in Render dashboard - never commit actual API keys to git
 
 ### Database Configuration  
 ```

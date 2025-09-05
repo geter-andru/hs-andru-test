@@ -1,6 +1,5 @@
 import airtableService from '../services/airtableService.js';
 import aiService from '../services/aiService.js';
-import makeService from '../services/makeService.js';
 import logger from '../utils/logger.js';
 
 const costCalculatorController = {
@@ -381,11 +380,7 @@ const costCalculatorController = {
         'Last Accessed': new Date().toISOString()
       });
 
-      // Trigger automation if requested
-      if (inputData.triggerAutomation) {
-        const automationResult = await makeService.triggerCostCalculation(customer, finalResult);
-        logger.info(`Cost calculation automation triggered: ${automationResult.success}`);
-      }
+      // Note: Make.com automation removed
 
       res.status(200).json({
         success: true,

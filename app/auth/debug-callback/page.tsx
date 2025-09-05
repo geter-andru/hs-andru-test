@@ -39,18 +39,18 @@ function DebugCallbackContent() {
       // Parse search parameters
       const searchParamsObj = new URLSearchParams(window.location.search);
       for (const [key, value] of searchParamsObj.entries()) {
-        urlData.searchParams[key] = value;
+        (urlData.searchParams as any)[key] = value;
         if (key in urlData.commonOAuthParams) {
-          urlData.commonOAuthParams[key] = value;
+          (urlData.commonOAuthParams as any)[key] = value;
         }
       }
 
       // Parse hash parameters (common for OAuth implicit flow)
       const hashParamsObj = new URLSearchParams(window.location.hash.substring(1));
       for (const [key, value] of hashParamsObj.entries()) {
-        urlData.hashParams[key] = value;
+        (urlData.hashParams as any)[key] = value;
         if (key in urlData.commonOAuthParams) {
-          urlData.commonOAuthParams[key] = value;
+          (urlData.commonOAuthParams as any)[key] = value;
         }
       }
 

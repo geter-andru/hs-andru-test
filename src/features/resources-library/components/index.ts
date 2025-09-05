@@ -1,4 +1,6 @@
 // resources-library components exports
 // This file is auto-maintained - do not edit manually
 
-// TODO: Add exports as components/hooks/types/services are created
+// Main Resource Library Components
+export { default as ResourceLibrary } from '../ResourceLibrary';
+export { default as ProductInputSection } from '../ProductInputSection';

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase, getCurrentUser } from '@/lib/supabase/client';
 import { auth } from '@/lib/api/client';
-import { SimplifiedDashboard } from '@/src/features/dashboard';
+import SimplifiedDashboard from '@/src/features/dashboard/SimplifiedDashboard';
 import { useCustomer, useProgress, useMilestones, useProgressInsights } from '@/lib/hooks/useAPI';
 
 export default function DashboardPage() {

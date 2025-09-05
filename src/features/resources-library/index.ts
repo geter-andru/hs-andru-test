@@ -14,4 +14,4 @@ export * from './types';
 export * from './api';
 
 // Configuration
-export { default as resources-libraryConfig } from './feature.config';
+export { default as resourcesLibraryConfig } from './feature.config';

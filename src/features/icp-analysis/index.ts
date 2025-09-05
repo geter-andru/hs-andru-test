@@ -14,4 +14,4 @@ export * from './types';
 export * from './api';
 
 // Configuration
-export { default as icp-analysisConfig } from './feature.config';
+export { default as icpAnalysisConfig } from './feature.config';

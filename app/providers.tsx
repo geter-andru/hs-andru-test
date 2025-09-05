@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import { useState, useEffect } from 'react';
 import { ThemeProvider } from '@/app/lib/components/ThemeProvider';
+import { UserIntelligenceProvider } from '@/app/lib/contexts/UserIntelligenceContext';
+import { SystematicScalingProvider } from '@/src/shared/contexts/SystematicScalingContext';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -29,7 +31,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        {children}
+        <UserIntelligenceProvider>
+          <SystematicScalingProvider>
+            {children}
+          </SystematicScalingProvider>
+        </UserIntelligenceProvider>
       </ThemeProvider>
       {isClient && (
         <>

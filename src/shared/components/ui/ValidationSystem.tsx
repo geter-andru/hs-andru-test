@@ -470,18 +470,18 @@ export const ValidatedField: React.FC<ValidatedFieldProps> = ({
   const childWithProps = React.cloneElement(children, {
     onBlur: (e: any) => {
       handleBlur();
-      if (children.props.onBlur) {
-        children.props.onBlur(e);
+      if ((children.props as any)?.onBlur) {
+        (children.props as any).onBlur(e);
       }
     },
     onChange: (e: any) => {
       const value = e?.target?.value !== undefined ? e.target.value : e;
       validateField(field, value);
-      if (children.props.onChange) {
-        children.props.onChange(e);
+      if ((children.props as any)?.onChange) {
+        (children.props as any).onChange(e);
       }
     },
-    className: `${children.props.className || ''} ${
+    className: `${(children.props as any)?.className || ''} ${
       state.touched[field] && state.errors[field]?.length > 0
         ? 'border-red-500 focus:border-red-500'
         : state.touched[field] && !state.errors[field]

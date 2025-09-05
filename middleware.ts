@@ -8,15 +8,18 @@ export async function middleware(req: NextRequest) {
     request: req,
   });
 
-  // Skip Supabase auth if environment variables are not properly configured
+  // Validate Supabase configuration
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   
-  if (!supabaseUrl || !supabaseKey || 
-      supabaseUrl.includes('your_supabase_') || 
-      supabaseKey.includes('your_supabase_')) {
-    // Return early for development - skip authentication
-    return supabaseResponse;
+  if (!supabaseUrl || !supabaseKey) {
+    console.error('Missing Supabase environment variables in middleware');
+    // Allow access to login page
+    if (req.nextUrl.pathname.startsWith('/login')) {
+      return supabaseResponse;
+    }
+    // Redirect all other requests to login
+    return NextResponse.redirect(new URL('/login', req.url));
   }
 
   const supabase = createServerClient(

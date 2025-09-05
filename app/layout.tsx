@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Red_Hat_Display, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
-import ErrorBoundary from "./components/common/ErrorBoundary";
 
 const redHatDisplay = Red_Hat_Display({
   variable: "--font-brand",
@@ -34,9 +33,7 @@ export default function RootLayout({
         className={`${redHatDisplay.variable} ${jetBrainsMono.variable} antialiased`}
         suppressHydrationWarning={true}
       >
-        <ErrorBoundary>
-          <Providers>{children}</Providers>
-        </ErrorBoundary>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

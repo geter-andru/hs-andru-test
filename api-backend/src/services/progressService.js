@@ -1,5 +1,4 @@
 import airtableService from './airtableService.js';
-import makeService from './makeService.js';
 import logger from '../utils/logger.js';
 
 class ProgressService {
@@ -225,8 +224,7 @@ class ProgressService {
           totalMilestones: progressData.totalMilestones
         };
 
-        // Trigger Make.com automation
-        await makeService.triggerProgressUpdate(customer, progressUpdate);
+        // Note: Make.com automation removed
       }
 
       // If significant progress milestone reached, trigger special automation
@@ -239,7 +237,7 @@ class ProgressService {
           completionPercentage: progressData.completionPercentage
         };
 
-        await makeService.triggerProgressUpdate(customer, specialUpdate);
+        // Note: Make.com automation removed
       }
 
     } catch (error) {

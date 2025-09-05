@@ -1,19 +1,17 @@
 {
   "name": "puppeteer-mcp-server",
   "version": "1.0.0",
-  "description": "Puppeteer MCP server for H&S Revenue Intelligence Platform",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "node --watch index.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.17.3",
-    "puppeteer": "^22.0.0",
-    "axios": "^1.7.0",
-    "url": "^0.11.4"
-  },
-  "keywords": ["mcp", "puppeteer", "automation", "web-scraping"],
-  "author": "H&S Platform",
-  "license": "MIT"
+    "@hisma/server-puppeteer": "^0.6.5",
+    "@modelcontextprotocol/sdk": "^1.17.4",
+    "puppeteer": "^24.17.0"
+  }
 }

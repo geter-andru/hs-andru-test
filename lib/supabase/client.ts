@@ -5,17 +5,12 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-// Check if Supabase environment variables are properly configured
-const isSupabaseConfigured = supabaseUrl && supabaseAnonKey && 
-  !supabaseUrl.includes('your_supabase_') && 
-  !supabaseAnonKey.includes('your_supabase_');
-
-// Use dummy values for development when Supabase is not configured
-const developmentUrl = 'https://placeholder.supabase.co';
-const developmentKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsYWNlaG9sZGVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NDUxMjc2MTAsImV4cCI6MTk2MDcwMzYxMH0.development-key';
-
-const finalUrl = isSupabaseConfigured ? supabaseUrl! : developmentUrl;
-const finalKey = isSupabaseConfigured ? supabaseAnonKey! : developmentKey;
+// Validate Supabase environment variables
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error(
+    'Missing Supabase environment variables. Please check NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY'
+  );
+}
 
 // Database types for H&S Revenue Intelligence Platform
 export interface Database {
@@ -176,7 +171,7 @@ export interface Database {
 }
 
 // Create a single supabase client for interacting with your database
-export const supabase: SupabaseClient<Database> = createClient(finalUrl, finalKey, {
+export const supabase: SupabaseClient<Database> = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     autoRefreshToken: true,
     persistSession: true,
@@ -196,10 +191,6 @@ export interface SupabaseUser {
 // Helper function to get current user
 export const getCurrentUser = async (): Promise<SupabaseUser | null> => {
   try {
-    // Return null in development when Supabase is not configured
-    if (!isSupabaseConfigured) {
-      return null;
-    }
     const { data: { user }, error } = await supabase.auth.getUser();
     if (error) throw error;
     return user;

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import webResearchService from '@/app/lib/services/webResearchService';
 
 export default function ApiTestPage() {
@@ -16,7 +16,7 @@ export default function ApiTestPage() {
       console.log('🚀 Testing REAL web research service...');
       
       const researchData = await webResearchService.conductProductResearch({
-        productName: query.split(' ')[0],
+        productName: query.split(' ')[0] || 'default',
         businessType: 'Technology',
         productDescription: query
       }, 'medium');

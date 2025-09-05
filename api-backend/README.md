@@ -7,7 +7,7 @@ Enterprise-grade Express.js API backend for the H&S Revenue Intelligence Platfor
 - **Framework**: Express.js with TypeScript support
 - **Testing**: Comprehensive test suite with 100% coverage
 - **Authentication**: JWT-based security system
-- **Integration**: Airtable, Make.com, Claude API
+- **Integration**: Airtable, Claude API
 - **Performance**: Optimized for concurrent requests
 
 ## Key Features
@@ -29,9 +29,7 @@ Enterprise-grade Express.js API backend for the H&S Revenue Intelligence Platfor
 
 ### ✅ External Integrations
 - **Airtable SDK**: Customer data and content management
-- **Make.com API**: Workflow automation and webhook management
 - **Claude API**: AI-powered insights and content generation
-- **Webhook System**: Real-time event processing
 
 ## Tech Stack
 - **Runtime**: Node.js 18+
@@ -78,7 +76,6 @@ JWT_EXPIRES_IN=24h
 
 # External Services (Optional)
 CLAUDE_API_KEY=your_claude_api_key
-MAKE_API_TOKEN=your_make_com_token
 
 # Logging
 LOG_LEVEL=debug
@@ -141,9 +138,6 @@ npm run start:prod     # Start in production mode
 - `POST /api/export/business-case` - Export business case
 - `POST /api/export/comprehensive` - Export complete report
 
-### Webhook Management
-- `POST /api/webhooks/core-resources` - Handle Core Resources webhooks
-- `GET /api/webhooks/status` - Webhook system status
 
 ## Testing
 
@@ -191,7 +185,6 @@ api-backend/
 │   │   ├── businessCaseController.js
 │   │   ├── progressController.js
 │   │   ├── exportController.js
-│   │   └── webhookController.js
 │   ├── middleware/           # Express middleware
 │   │   ├── auth.js
 │   │   ├── validation.js
@@ -201,12 +194,10 @@ api-backend/
 │   │   ├── auth.js
 │   │   ├── index.js
 │   │   ├── progress.js
-│   │   └── webhooks.js
 │   ├── services/             # Business logic
 │   │   ├── airtableService.js
 │   │   ├── authService.js
 │   │   ├── aiService.js
-│   │   ├── makeService.js
 │   │   └── progressService.js
 │   ├── utils/                # Utility functions
 │   │   └── logger.js
@@ -298,7 +289,6 @@ module.exports = {
 
 ## Recent Updates
 - ✅ **August 20, 2025**: Comprehensive test suite implementation
-- ✅ **August 19, 2025**: Webhook system for Core Resources integration
 - ✅ **August 18, 2025**: Export engine with multi-format support
 - ✅ **August 17, 2025**: Progress tracking and milestone system
 - ✅ **August 16, 2025**: Authentication and security middleware

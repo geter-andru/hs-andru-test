@@ -82,7 +82,7 @@ const SystematicScalingDashboard: React.FC<SystematicScalingDashboardProps> = ({
   const scalingVelocity = Math.max(18 - (overallProgress / 10), 6);
 
   const handleToolNavigation = async (tool: string, route: string) => {
-    await trackBehavior({
+    await trackBehavior(JSON.stringify({
       eventType: 'tool_usage',
       metadata: {
         tool,
@@ -98,7 +98,7 @@ const SystematicScalingDashboard: React.FC<SystematicScalingDashboardProps> = ({
       },
       businessImpact: 'medium',
       professionalCredibility: 75
-    });
+    }));
 
     router.push(route);
   };

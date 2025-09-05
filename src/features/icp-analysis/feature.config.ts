@@ -1,5 +1,5 @@
 // icp-analysis Feature Configuration
-export const icp-analysisConfig = {
+export const icpAnalysisConfig = {
   name: 'icp-analysis',
   version: '1.0.0',
   description: 'TODO: Add feature description',
@@ -7,4 +7,4 @@ export const icp-analysisConfig = {
   // TODO: Add feature-specific configuration
 };
 
-export default icp-analysisConfig;
+export default icpAnalysisConfig;

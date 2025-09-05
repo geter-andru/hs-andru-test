@@ -61,13 +61,15 @@ class PerformanceMonitor {
       // First Input Delay (FID) & Interaction to Next Paint (INP)
       const fidObserver = new PerformanceObserver((list) => {
         list.getEntries().forEach((entry) => {
+          const processingStart = (entry as any).processingStart || entry.startTime;
+          const delay = processingStart - entry.startTime;
           this.recordMetric({
             name: 'First Input Delay',
-            value: entry.processingStart - entry.startTime,
+            value: delay,
             unit: 'ms',
             timestamp: Date.now(),
             category: 'interaction',
-            isGood: (entry.processingStart - entry.startTime) < 100,
+            isGood: delay < 100,
             threshold: 100
           });
         });

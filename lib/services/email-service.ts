@@ -82,7 +82,7 @@ const EMAIL_TEMPLATES = {
     subject: 'Welcome to {{companyName}}!',
     html: `
       <h1>Welcome {{userName}}!</h1>
-      <p>Thank you for joining {{companyName}}. We're excited to help you scale from ${{currentARR}}M to ${{targetARR}}M ARR.</p>
+      <p>Thank you for joining {{companyName}}. We're excited to help you scale your revenue systematically.</p>
       <p>Your journey to systematic revenue scaling starts now.</p>
       <a href="{{dashboardUrl}}" style="background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
         Access Your Dashboard

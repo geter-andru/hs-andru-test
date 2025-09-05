@@ -63,7 +63,7 @@ const AuthTestPage: React.FC = () => {
                 <h3 className="text-white text-lg font-semibold mb-4">Session Details</h3>
                 <div className="space-y-2 text-sm">
                   <p className="text-gray-300">
-                    <span className="font-medium">Expires:</span> {new Date(session.expires_at * 1000).toLocaleString()}
+                    <span className="font-medium">Expires:</span> {session.expires_at ? new Date(session.expires_at * 1000).toLocaleString() : 'Unknown'}
                   </p>
                   <p className="text-gray-300">
                     <span className="font-medium">Provider:</span> {session.user.app_metadata?.provider || 'Unknown'}

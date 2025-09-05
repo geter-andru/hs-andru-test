@@ -1,6 +1,34 @@
 /* H&S Platform Brand Design Tokens */
 /* Matching Assessment Experience - Dark Theme + Red Hat Display */
 
+@import "tailwindcss";
+
+/* Tailwind v4 Custom Colors */
+@theme {
+  --color-background-primary: #0a0a0a;
+  --color-background-secondary: #111111;
+  --color-background-tertiary: #1a1a1a;
+  --color-background-elevated: #222222;
+  --color-surface: #2a2a2a;
+  --color-surface-hover: #333333;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #e2e8f0;
+  --color-text-muted: #94a3b8;
+  --color-text-subtle: #64748b;
+  --color-text-disabled: #475569;
+  --color-brand-primary: #3b82f6;
+  --color-brand-secondary: #10b981;
+  --color-brand-accent: #8b5cf6;
+  --color-accent-warning: #f59e0b;
+  --color-accent-danger: #ef4444;
+  --color-accent-success: #22c55e;
+  --color-hover: rgba(59, 130, 246, 0.08);
+  --color-focus: rgba(59, 130, 246, 0.2);
+  --color-active: rgba(59, 130, 246, 0.12);
+  --color-glass-background: rgba(255, 255, 255, 0.03);
+  --color-glass-border: rgba(255, 255, 255, 0.08);
+}
+
 :root {
   /* Typography System - Red Hat Display */
   --font-brand: 'Red Hat Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;

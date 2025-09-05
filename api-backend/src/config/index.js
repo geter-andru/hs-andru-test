@@ -32,12 +32,6 @@ const config = {
     },
   },
 
-  // Make.com Webhooks
-  webhooks: {
-    icp: process.env.MAKE_ICP_WEBHOOK,
-    costCalculator: process.env.MAKE_COST_CALCULATOR_WEBHOOK,
-    businessCase: process.env.MAKE_BUSINESS_CASE_WEBHOOK,
-  },
 
   // Security Configuration
   security: {

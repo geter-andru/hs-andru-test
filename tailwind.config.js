@@ -4,56 +4,47 @@ module.exports = {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        // Background Colors (Dark Theme)
-        background: {
-          primary: '#0a0a0a',      // --color-background-primary
-          secondary: '#111111',    // --color-background-secondary
-          tertiary: '#1a1a1a',     // --color-background-tertiary
-          elevated: '#222222',     // --color-background-elevated
-        },
-        surface: {
-          DEFAULT: '#2a2a2a',      // --color-surface
-          hover: '#333333',        // --color-surface-hover
-        },
+        // Background Colors (Dark Theme) - Using CSS custom properties
+        'background-primary': 'var(--bg-primary)',
+        'background-secondary': 'var(--bg-secondary)',
+        'background-tertiary': 'var(--bg-tertiary)',
+        'background-elevated': 'var(--bg-elevated)',
         
-        // Text Colors (Dark Theme) - Matching Design Tokens
-        text: {
-          primary: '#ffffff',      // --text-heading/--text-primary
-          secondary: '#e2e8f0',    // --text-body/--text-secondary (slate-200)
-          muted: '#94a3b8',        // --text-muted (slate-400)
-          subtle: '#64748b',       // --text-dim (slate-500)
-          disabled: '#475569',     // slate-600
-        },
+        // Surface Colors
+        'surface': 'var(--bg-card)',
+        'surface-hover': 'var(--bg-section)',
         
-        // Professional Brand Colors
-        brand: {
-          primary: '#3b82f6',      // --color-brand-primary (blue-500)
-          secondary: '#10b981',    // --color-brand-secondary (emerald-500)
-          accent: '#8b5cf6',       // --color-brand-accent (violet-500)
-        },
+        // Text Colors (Dark Theme) - Using CSS custom properties
+        'text-primary': 'var(--text-heading)',
+        'text-secondary': 'var(--text-body)',
+        'text-muted': 'var(--text-muted)',
+        'text-subtle': 'var(--text-dim)',
+        'text-disabled': 'var(--text-disabled)',
+        
+        // Professional Brand Colors - Using CSS custom properties
+        'brand-primary': 'var(--color-brand-primary)',
+        'brand-secondary': 'var(--color-brand-secondary)',
+        'brand-accent': 'var(--color-brand-accent)',
         
         // Accent Colors
-        accent: {
-          warning: '#f59e0b',      // --color-accent-warning (amber-500)
-          danger: '#ef4444',       // --color-accent-danger (red-500)
-          success: '#22c55e',      // --color-accent-success (green-500)
-        },
+        'accent-warning': 'var(--color-warning)',
+        'accent-danger': 'var(--color-error)',
+        'accent-success': 'var(--color-success)',
         
         // Interactive States
-        hover: 'rgba(59, 130, 246, 0.08)',   // --color-hover
-        focus: 'rgba(59, 130, 246, 0.2)',    // --color-focus
-        active: 'rgba(59, 130, 246, 0.12)',  // --color-active
+        'hover': 'var(--color-hover)',
+        'focus': 'var(--color-focus)',
+        'active': 'var(--color-active)',
         
-        // Glass Effect Colors
-        glass: {
-          background: 'rgba(255, 255, 255, 0.03)',  // --glass-background
-          border: 'rgba(255, 255, 255, 0.08)',      // --glass-border
-        },
+        // Glass Effect Colors - Using CSS custom properties
+        'glass-background': 'var(--glass-background)',
+        'glass-border': 'var(--glass-border)',
         
         // Legacy support for existing code
         primary: {

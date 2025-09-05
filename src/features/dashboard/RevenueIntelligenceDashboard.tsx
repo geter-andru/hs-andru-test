@@ -2,12 +2,37 @@
 
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { TrendingUp, Target, Award, Zap, Activity, Clock, BarChart3, Crown, ToggleLeft, ToggleRight, Settings, Users } from 'lucide-react'
+import { TrendingUp, Target, Award, Zap, BarChart3, Crown, ToggleLeft, ToggleRight, Settings } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 // Mock components for Next.js compatibility
+interface Achievement {
+  id: string
+  title: string
+  description: string
+  points: number
+  achievedAt: string
+}
+
+interface MilestoneData {
+  id: string
+  title: string
+  description: string
+  achieved: boolean
+  achievedAt?: string
+  points: number
+}
+
+interface ActionData {
+  id: string
+  type: string
+  data: Record<string, unknown>
+  timestamp: string
+  status: 'pending' | 'completed' | 'failed'
+}
+
 const ProfessionalAchievementNotification: React.FC<{
-  achievements: any[]
+  achievements: Achievement[]
   onDismiss: (id: string) => void
   position: string
 }> = ({ achievements, onDismiss, position }) => (
@@ -16,13 +41,7 @@ const ProfessionalAchievementNotification: React.FC<{
   </div>
 )
 
-const BusinessMilestoneProgress: React.FC = () => <div>Business Milestone Progress Component</div>
-const ShadowCRMIntegration: React.FC = () => <div>Shadow CRM Integration Component</div>
-const ExperienceDrivenPriorities: React.FC = () => <div>Experience Driven Priorities Component</div>
-const ProfessionalLevelProgression: React.FC = () => <div>Professional Level Progression Component</div>
-const CompetitiveIntelligenceTracker: React.FC = () => <div>Competitive Intelligence Tracker Component</div>
-const StakeholderRelationshipMap: React.FC = () => <div>Stakeholder Relationship Map Component</div>
-const DealMomentumAnalyzer: React.FC = () => <div>Deal Momentum Analyzer Component</div>
+// Mock components removed - using actual components from imports
 
 import CollapsibleModule from './CollapsibleModule'
 const DashboardSettings: React.FC<{
@@ -91,7 +110,7 @@ interface DevelopmentData {
   }
   todayActions: number
   todayExperience: number
-  milestoneProgress: any[]
+  milestoneProgress: MilestoneData[]
   seriesBReadiness: {
     progress: number
     status: string
@@ -126,7 +145,7 @@ interface DevelopmentData {
     riskLevel: string
     stakeholderAlignment: number
   }>
-  recentActions?: any[]
+  recentActions?: ActionData[]
 }
 
 interface RevenueIntelligenceDashboardProps {
@@ -165,7 +184,7 @@ const professionalDevelopmentService = {
     recentActions: []
   }),
 
-  trackAction: async (customerId: string, actionType: string, actionData: any) => ({
+  trackAction: async (customerId: string, actionType: string, actionData: Record<string, unknown>) => ({
     experienceGained: 25,
     achievements: []
   })
@@ -193,7 +212,7 @@ const useUserIntelligence = () => ({
 })
 
 const useBehavioralTracking = (type: string, customerId: string) => ({
-  trackAction: (actionType: string, data: any) => console.log('Tracking:', actionType, data)
+  trackAction: (actionType: string, data: Record<string, unknown>) => console.log('Tracking:', actionType, data)
 })
 
 const useProfessionalNotifications = () => ({
@@ -340,7 +359,7 @@ const RevenueIntelligenceDashboard: React.FC<RevenueIntelligenceDashboardProps> 
   }, [customerId, variant])
 
   // Track professional development actions
-  const trackProfessionalAction = async (actionType: string, actionData: any = {}) => {
+  const trackProfessionalAction = async (actionType: string, actionData: Record<string, unknown> = {}) => {
     try {
       const result = await professionalDevelopmentService.trackAction(customerId, actionType, actionData)
       
@@ -381,7 +400,7 @@ const RevenueIntelligenceDashboard: React.FC<RevenueIntelligenceDashboardProps> 
   }
 
   // Handle resource actions (view, copy, execute)
-  const handleResourceAction = async (actionType: string, resourceData: any) => {
+  const handleResourceAction = async (actionType: string, resourceData: Record<string, unknown>) => {
     await trackProfessionalAction(actionType, {
       resourceName: resourceData.name,
       resourceType: resourceData.type,
@@ -488,14 +507,14 @@ const RevenueIntelligenceDashboard: React.FC<RevenueIntelligenceDashboardProps> 
               <div className="flex items-center mt-2 space-x-4">
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                  <span className="text-xs text-blue-300">Stage {currentSeriesBStage}: {milestoneModuleService.seriesBStages[currentSeriesBStage]?.name}</span>
+                  <span className="text-xs text-blue-300">Stage {currentSeriesBStage}: {(milestoneModuleService.seriesBStages as any)[currentSeriesBStage]?.name}</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
                   <span className="text-xs text-purple-300">Target: Stage {targetSeriesBStage}</span>
                 </div>
                 <div className="text-xs text-gray-500">
-                  Focus: {milestoneModuleService.seriesBStages[currentSeriesBStage]?.focus}
+                  Focus: {(milestoneModuleService.seriesBStages as any)[currentSeriesBStage]?.focus}
                 </div>
               </div>
             </div>

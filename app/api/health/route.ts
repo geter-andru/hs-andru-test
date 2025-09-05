@@ -54,7 +54,7 @@ async function checkSupabase(): Promise<{ status: 'pass' | 'fail'; responseTime?
     const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     
     if (!supabaseUrl || !supabaseKey || supabaseUrl.includes('your_supabase_')) {
-      return { status: 'warn', message: 'Supabase not configured' };
+      return { status: 'fail', message: 'Supabase not configured' };
     }
 
     const supabase = createClient(supabaseUrl, supabaseKey);

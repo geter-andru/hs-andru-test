@@ -1,5 +1,5 @@
 // resources-library Feature Configuration
-export const resources-libraryConfig = {
+export const resourcesLibraryConfig = {
   name: 'resources-library',
   version: '1.0.0',
   description: 'TODO: Add feature description',
@@ -7,4 +7,4 @@ export const resources-libraryConfig = {
   // TODO: Add feature-specific configuration
 };
 
-export default resources-libraryConfig;
+export default resourcesLibraryConfig;

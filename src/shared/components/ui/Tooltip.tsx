@@ -301,23 +301,23 @@ const Tooltip: React.FC<TooltipProps> = ({
           }
         },
         onMouseEnter: (e: React.MouseEvent) => {
-          children.props.onMouseEnter?.(e);
+          (children.props as any)?.onMouseEnter?.(e);
           handleMouseEnter();
         },
         onMouseLeave: (e: React.MouseEvent) => {
-          children.props.onMouseLeave?.(e);
+          (children.props as any)?.onMouseLeave?.(e);
           handleMouseLeave();
         },
         onFocus: (e: React.FocusEvent) => {
-          children.props.onFocus?.(e);
+          (children.props as any)?.onFocus?.(e);
           handleFocus();
         },
         onBlur: (e: React.FocusEvent) => {
-          children.props.onBlur?.(e);
+          (children.props as any)?.onBlur?.(e);
           handleBlur();
         },
         onClick: (e: React.MouseEvent) => {
-          children.props.onClick?.(e);
+          (children.props as any)?.onClick?.(e);
           handleClick();
         },
         'aria-describedby': isVisible ? 'tooltip' : undefined

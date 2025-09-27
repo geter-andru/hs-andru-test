@@ -2,38 +2,47 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { auth } from '@/lib/api/client';
-import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
-import { CostCalculatorForm } from '@/components/cost-calculator/CostCalculatorForm';
-import { CostResults } from '@/components/cost-calculator/CostResults';
-import { CostHistory } from '@/components/cost-calculator/CostHistory';
+import { useSupabaseAuth } from '@/src/shared/hooks/useSupabaseAuth';
+import { EnterpriseNavigationV2 } from '@/src/shared/components/layout/EnterpriseNavigationV2';
+import { CostCalculatorForm } from '@/src/shared/components/cost-calculator/CostCalculatorForm';
+import { CostResults } from '@/src/shared/components/cost-calculator/CostResults';
+import { CostHistory } from '@/src/shared/components/cost-calculator/CostHistory';
 import { useCostHistory, useTrackAction } from '@/lib/hooks/useAPI';
 
 export default function CostCalculatorPage() {
   const router = useRouter();
-  const [customerId, setCustomerId] = useState<string | undefined>();
+  const { user, loading: authLoading } = useSupabaseAuth();
   const [activeTab, setActiveTab] = useState<'calculator' | 'results' | 'history'>('calculator');
   const [currentResults, setCurrentResults] = useState<any>(null);
 
   const trackAction = useTrackAction();
-  const { data: costHistory } = useCostHistory(customerId);
+  const { data: costHistory } = useCostHistory(user?.id);
   
   useEffect(() => {
-    const id = auth.getCustomerId();
-    if (!id || !auth.isAuthenticated()) {
+    if (authLoading) return; // Wait for auth to load
+    
+    if (!user) {
       router.push('/login');
-    } else {
-      setCustomerId(id);
-      // Track page view
-      trackAction.mutate({
-        customerId: id,
-        action: 'page_view',
-        metadata: { page: 'cost_calculator' }
-      });
+      return;
     }
-  }, [router, trackAction]);
 
-  if (!customerId) {
+    // Track page view
+    trackAction.mutate({
+      customerId: user.id,
+      action: 'page_view',
+      metadata: { page: 'cost_calculator' }
+    });
+  }, [user, authLoading, router, trackAction]);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-gray-400">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
     return null;
   }
 
@@ -49,7 +58,7 @@ export default function CostCalculatorPage() {
   };
 
   return (
-    <DashboardLayout>
+    <EnterpriseNavigationV2>
       <div className="space-y-6">
         {/* Header */}
         <div>
@@ -87,21 +96,21 @@ export default function CostCalculatorPage() {
         <div className="mt-6">
           {activeTab === 'calculator' && (
             <CostCalculatorForm 
-              customerId={customerId}
+              customerId={user.id}
               onCalculationComplete={handleCalculationComplete}
             />
           )}
           
           {activeTab === 'results' && (
             <CostResults 
-              customerId={customerId}
+              customerId={user.id}
               results={currentResults || costHistory?.data?.[0]}
             />
           )}
           
           {activeTab === 'history' && (
             <CostHistory 
-              customerId={customerId}
+              customerId={user.id}
               onViewResults={(results) => {
                 setCurrentResults(results);
                 setActiveTab('results');
@@ -110,6 +119,6 @@ export default function CostCalculatorPage() {
           )}
         </div>
       </div>
-    </DashboardLayout>
+    </EnterpriseNavigationV2>
   );
 }

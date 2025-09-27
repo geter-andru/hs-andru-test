@@ -2,54 +2,64 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { auth } from '@/lib/api/client';
-import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
-import { ProgressOverview } from '@/components/dashboard/ProgressOverview';
-import { MilestonesCard } from '@/components/dashboard/MilestonesCard';
-import { QuickActions } from '@/components/dashboard/QuickActions';
-import { RecentActivity } from '@/components/dashboard/RecentActivity';
-import { InsightsPanel } from '@/components/dashboard/InsightsPanel';
+import { useSupabaseAuth } from '@/src/shared/hooks/useSupabaseAuth';
+import { EnterpriseNavigationV2 } from '@/src/shared/components/layout/EnterpriseNavigationV2';
+import { ProgressOverview } from '@/src/shared/components/dashboard/ProgressOverview';
+import { MilestonesCard } from '@/src/shared/components/dashboard/MilestonesCard';
+import { QuickActions } from '@/src/shared/components/dashboard/QuickActions';
+import { RecentActivity } from '@/src/shared/components/dashboard/RecentActivity';
+import { InsightsPanel } from '@/src/shared/components/dashboard/InsightsPanel';
+import { EnterpriseDashboard } from '@/src/shared/components/dashboard/EnterpriseDashboard';
 import { useCustomer, useProgress, useMilestones, useProgressInsights } from '@/lib/hooks/useAPI';
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [customerId, setCustomerId] = useState<string | undefined>();
+  const { user, loading: authLoading } = useSupabaseAuth();
 
   useEffect(() => {
-    const id = auth.getCustomerId();
-    if (!id || !auth.isAuthenticated()) {
+    if (authLoading) return; // Wait for auth to load
+    
+    if (!user) {
       router.push('/login');
-    } else {
-      setCustomerId(id);
     }
-  }, [router]);
+  }, [user, authLoading, router]);
 
-  const { data: customer, isLoading: customerLoading } = useCustomer(customerId);
-  const { data: progress, isLoading: progressLoading } = useProgress(customerId);
-  const { data: milestones, isLoading: milestonesLoading } = useMilestones(customerId);
-  const { data: insights, isLoading: insightsLoading } = useProgressInsights(customerId);
+  const { data: customer, isLoading: customerLoading } = useCustomer(user?.id);
+  const { data: progress, isLoading: progressLoading } = useProgress(user?.id);
+  const { data: milestones, isLoading: milestonesLoading } = useMilestones(user?.id);
+  const { data: insights, isLoading: insightsLoading } = useProgressInsights(user?.id);
 
-  if (!customerId) {
+  if (authLoading) {
+    return (
+      <EnterpriseNavigationV2>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-text-muted">Loading...</div>
+        </div>
+      </EnterpriseNavigationV2>
+    );
+  }
+
+  if (!user) {
     return null;
   }
 
   const isLoading = customerLoading || progressLoading || milestonesLoading || insightsLoading;
 
   return (
-    <DashboardLayout>
+    <EnterpriseNavigationV2>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-3xl font-bold text-text-primary">
               Welcome back{customer?.data?.name ? `, ${customer.data.name}` : ''}!
             </h1>
-            <p className="text-gray-600 mt-1">
+            <p className="text-text-muted mt-1">
               Here's your revenue intelligence overview
             </p>
           </div>
-          <div className="text-sm text-gray-500">
-            Customer ID: <span className="font-mono bg-gray-100 px-2 py-1 rounded">{customerId}</span>
+          <div className="text-sm text-text-subtle">
+            User ID: <span className="font-mono bg-surface px-2 py-1 rounded">{user.id.slice(0, 8)}...</span>
           </div>
         </div>
 
@@ -67,7 +77,7 @@ export default function DashboardPage() {
             <MilestonesCard 
               milestones={milestones?.data} 
               isLoading={milestonesLoading}
-              customerId={customerId}
+              customerId={user.id}
             />
 
             {/* Recent Activity */}
@@ -80,7 +90,7 @@ export default function DashboardPage() {
           {/* Right Column - 1 col */}
           <div className="space-y-6">
             {/* Quick Actions */}
-            <QuickActions customerId={customerId} />
+            <QuickActions customerId={user.id} />
 
             {/* Insights */}
             <InsightsPanel 
@@ -90,6 +100,6 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
-    </DashboardLayout>
+    </EnterpriseNavigationV2>
   );
 }

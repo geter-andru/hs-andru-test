@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { ResourceGrid } from '@/src/features/resources/ResourceGrid';
 import { ResourceGenerationForm } from '@/src/features/resources/ResourceGenerationForm';
+import { ResourceDetailModal } from '@/src/features/resources/ResourceDetailModal';
 
 // Types for Resources Library
 interface Resource {
@@ -117,6 +118,8 @@ export default function ResourcesPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showGenerationForm, setShowGenerationForm] = useState(false);
+  const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -127,8 +130,8 @@ export default function ResourcesPage() {
 
   // Handle resource click
   const handleResourceClick = (resource: Resource) => {
-    console.log('Resource clicked:', resource);
-    // TODO: Implement resource detail modal or navigation
+    setSelectedResource(resource);
+    setShowDetailModal(true);
   };
 
   // Handle generate new resource
@@ -153,6 +156,64 @@ export default function ResourcesPage() {
       console.error('Failed to generate resource:', error);
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  // Handle resource download
+  const handleResourceDownload = async (resource: Resource, format: string) => {
+    try {
+      // TODO: Implement download API call
+      console.log('Downloading resource:', resource.id, 'format:', format);
+      // Simulate download
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log('Download completed');
+    } catch (error) {
+      console.error('Failed to download resource:', error);
+    }
+  };
+
+  // Handle resource share
+  const handleResourceShare = async (resource: Resource) => {
+    try {
+      // TODO: Implement share functionality
+      console.log('Sharing resource:', resource.id);
+      if (navigator.share) {
+        await navigator.share({
+          title: resource.title,
+          text: resource.description,
+          url: window.location.href
+        });
+      } else {
+        // Fallback: copy to clipboard
+        await navigator.clipboard.writeText(window.location.href);
+        console.log('Link copied to clipboard');
+      }
+    } catch (error) {
+      console.error('Failed to share resource:', error);
+    }
+  };
+
+  // Handle resource feedback
+  const handleResourceFeedback = async (resource: Resource, type: 'positive' | 'negative', comment?: string) => {
+    try {
+      // TODO: Implement feedback API call
+      console.log('Submitting feedback for resource:', resource.id, 'type:', type, 'comment:', comment);
+      await new Promise(resolve => setTimeout(resolve, 500));
+      console.log('Feedback submitted successfully');
+    } catch (error) {
+      console.error('Failed to submit feedback:', error);
+    }
+  };
+
+  // Handle resource regenerate
+  const handleResourceRegenerate = async (resource: Resource) => {
+    try {
+      // TODO: Implement regenerate API call
+      console.log('Regenerating resource:', resource.id);
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      console.log('Resource regenerated successfully');
+    } catch (error) {
+      console.error('Failed to regenerate resource:', error);
     }
   };
 
@@ -225,6 +286,22 @@ export default function ResourcesPage() {
           onGenerate={handleFormSubmit}
           onClose={() => setShowGenerationForm(false)}
           isOpen={showGenerationForm}
+          isLoading={isGenerating}
+        />
+
+        {/* Resource Detail Modal */}
+        <ResourceDetailModal
+          resource={selectedResource}
+          tier={RESOURCE_TIERS.find(t => t.id === selectedResource?.tier) || RESOURCE_TIERS[0]}
+          isOpen={showDetailModal}
+          onClose={() => {
+            setShowDetailModal(false);
+            setSelectedResource(null);
+          }}
+          onDownload={handleResourceDownload}
+          onShare={handleResourceShare}
+          onFeedback={handleResourceFeedback}
+          onRegenerate={handleResourceRegenerate}
           isLoading={isGenerating}
         />
       </div>

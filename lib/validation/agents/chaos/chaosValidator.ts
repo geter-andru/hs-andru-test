@@ -77,12 +77,12 @@ const DEFAULT_CONFIG: ChaosTestConfig = {
   testDuration: 60, // 1 minute of sustained load
   rampUpTime: 10, // 10 seconds to reach full load
   targetEndpoints: [
+    '/health',
+    '/api/docs',
+    '/api/customers',
     '/api/assessment/status',
     '/api/icp-analysis/generate',
-    '/api/resources/generate',
-    '/api/export/assessment',
-    '/api/orchestrator/founder-profile',
-    '/api/supabase-management'
+    '/api/resources/generate'
   ],
   memoryThreshold: 512, // 512MB memory threshold
   cpuThreshold: 80, // 80% CPU threshold
@@ -210,8 +210,8 @@ class ChaosValidator {
     const endpoint = this.config.targetEndpoints[userId % this.config.targetEndpoints.length];
     
     try {
-      // Simulate API call with curl
-      const { stdout, stderr } = await execAsync(`curl -s -w "%{http_code}" -o /dev/null http://localhost:3000${endpoint}`, {
+      // Simulate API call with curl (test backend server on port 3001)
+      const { stdout, stderr } = await execAsync(`curl -s -w "%{http_code}" -o /dev/null http://localhost:3001${endpoint}`, {
         timeout: 10000 // 10 second timeout
       });
 
@@ -219,6 +219,22 @@ class ChaosValidator {
       
       if (stderr) {
         throw new Error(`Request failed: ${stderr}`);
+      }
+      
+      const httpCode = parseInt(stdout.trim());
+      
+      // Accept 401 (Unauthorized) as expected for protected endpoints
+      if (httpCode >= 500) {
+        throw new Error(`HTTP ${httpCode} server error`);
+      }
+      
+      // For 401/403, consider it a successful test (auth is working)
+      if (httpCode === 401 || httpCode === 403) {
+        return { responseTime };
+      }
+      
+      if (httpCode >= 400) {
+        throw new Error(`HTTP ${httpCode} client error`);
       }
 
       return { responseTime };

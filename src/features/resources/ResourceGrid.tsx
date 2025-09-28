@@ -9,13 +9,9 @@ import {
   List, 
   SortAsc, 
   SortDesc,
-  Lock,
-  CheckCircle,
-  Clock,
-  Sparkles,
-  Download,
-  Eye
+  Sparkles
 } from 'lucide-react';
+import { ResourceCard, ResourceCardSkeleton } from './ResourceCard';
 
 // Types
 interface Resource {
@@ -131,90 +127,22 @@ export function ResourceGrid({
     return tiers.find(tier => tier.id === tierId) || tiers[0];
   };
 
-  // Get status icon
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'available':
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'locked':
-        return <Lock className="h-4 w-4 text-gray-400" />;
-      case 'generating':
-        return <Clock className="h-4 w-4 text-blue-500 animate-spin" />;
-      default:
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
-    }
-  };
-
   // Grid view component
   const GridView = () => (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       <AnimatePresence>
         {filteredAndSortedResources.map((resource, index) => {
           const tierInfo = getTierInfo(resource.tier);
-          const IconComponent = tierInfo.icon;
-
+          
           return (
-            <motion.div
+            <ResourceCard
               key={resource.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3, delay: index * 0.05 }}
-              className={`
-                group relative bg-white rounded-xl border-2 transition-all duration-300
-                ${resource.status === 'available' 
-                  ? 'border-gray-200 hover:border-gray-300 cursor-pointer hover:shadow-lg' 
-                  : 'border-gray-100 cursor-not-allowed opacity-75'
-                }
-                ${tierInfo.borderColor}
-              `}
-              onClick={() => resource.status === 'available' && onResourceClick(resource)}
-            >
-              {/* Tier Badge */}
-              <div className={`
-                absolute -top-2 -right-2 px-3 py-1 rounded-full text-xs font-semibold
-                ${tierInfo.bgColor} ${tierInfo.color}
-              `}>
-                {tierInfo.name}
-              </div>
-
-              {/* Content */}
-              <div className="p-6">
-                {/* Header */}
-                <div className="flex items-start justify-between mb-4">
-                  <div className={`
-                    p-3 rounded-lg ${tierInfo.bgColor}
-                  `}>
-                    <IconComponent className={`h-6 w-6 ${tierInfo.color}`} />
-                  </div>
-                  {getStatusIcon(resource.status)}
-                </div>
-
-                {/* Title & Description */}
-                <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-                  {resource.title}
-                </h3>
-                <p className="text-sm text-gray-600 mb-4 line-clamp-3">
-                  {resource.description}
-                </p>
-
-                {/* Category */}
-                <div className="text-xs text-gray-500 mb-4">
-                  {resource.category}
-                </div>
-
-                {/* Footer */}
-                <div className="flex items-center justify-between text-xs text-gray-500">
-                  <span>{resource.accessCount} views</span>
-                  <span>{new Date(resource.lastUpdated).toLocaleDateString()}</span>
-                </div>
-              </div>
-
-              {/* Hover Overlay */}
-              {resource.status === 'available' && (
-                <div className="absolute inset-0 bg-blue-500/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              )}
-            </motion.div>
+              resource={resource}
+              tier={tierInfo}
+              viewMode="grid"
+              onClick={onResourceClick}
+              index={index}
+            />
           );
         })}
       </AnimatePresence>
@@ -227,69 +155,16 @@ export function ResourceGrid({
       <AnimatePresence>
         {filteredAndSortedResources.map((resource, index) => {
           const tierInfo = getTierInfo(resource.tier);
-          const IconComponent = tierInfo.icon;
-
+          
           return (
-            <motion.div
+            <ResourceCard
               key={resource.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.3, delay: index * 0.05 }}
-              className={`
-                group flex items-center p-4 bg-white rounded-lg border transition-all duration-300
-                ${resource.status === 'available' 
-                  ? 'border-gray-200 hover:border-gray-300 cursor-pointer hover:shadow-md' 
-                  : 'border-gray-100 cursor-not-allowed opacity-75'
-                }
-              `}
-              onClick={() => resource.status === 'available' && onResourceClick(resource)}
-            >
-              {/* Icon */}
-              <div className={`
-                p-3 rounded-lg mr-4 ${tierInfo.bgColor}
-              `}>
-                <IconComponent className={`h-6 w-6 ${tierInfo.color}`} />
-              </div>
-
-              {/* Content */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between mb-1">
-                  <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors truncate">
-                    {resource.title}
-                  </h3>
-                  <div className="flex items-center space-x-2">
-                    <span className={`
-                      px-2 py-1 rounded-full text-xs font-semibold
-                      ${tierInfo.bgColor} ${tierInfo.color}
-                    `}>
-                      {tierInfo.name}
-                    </span>
-                    {getStatusIcon(resource.status)}
-                  </div>
-                </div>
-                <p className="text-sm text-gray-600 mb-2 line-clamp-2">
-                  {resource.description}
-                </p>
-                <div className="flex items-center space-x-4 text-xs text-gray-500">
-                  <span>{resource.category}</span>
-                  <span>{resource.accessCount} views</span>
-                  <span>{new Date(resource.lastUpdated).toLocaleDateString()}</span>
-                </div>
-              </div>
-
-              {/* Actions */}
-              {resource.status === 'available' && (
-                <div className="flex items-center space-x-2 ml-4">
-                  <button className="p-2 text-gray-400 hover:text-blue-500 transition-colors">
-                    <Eye className="h-4 w-4" />
-                  </button>
-                  <button className="p-2 text-gray-400 hover:text-green-500 transition-colors">
-                    <Download className="h-4 w-4" />
-                  </button>
-                </div>
-              )}
-            </motion.div>
+              resource={resource}
+              tier={tierInfo}
+              viewMode="list"
+              onClick={onResourceClick}
+              index={index}
+            />
           );
         })}
       </AnimatePresence>
@@ -421,9 +296,19 @@ export function ResourceGrid({
 
       {/* Results */}
       {isLoading ? (
-        <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-        </div>
+        viewMode === 'grid' ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {[...Array(8)].map((_, index) => (
+              <ResourceCardSkeleton key={index} viewMode="grid" />
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {[...Array(5)].map((_, index) => (
+              <ResourceCardSkeleton key={index} viewMode="list" />
+            ))}
+          </div>
+        )
       ) : filteredAndSortedResources.length === 0 ? (
         <div className="text-center py-12">
           <Sparkles className="h-12 w-12 text-gray-400 mx-auto mb-4" />

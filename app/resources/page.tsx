@@ -12,6 +12,7 @@ import {
   CheckCircle
 } from 'lucide-react';
 import { ResourceGrid } from '@/src/features/resources/ResourceGrid';
+import { ResourceGenerationForm } from '@/src/features/resources/ResourceGenerationForm';
 
 // Types for Resources Library
 interface Resource {
@@ -115,6 +116,7 @@ export default function ResourcesPage() {
   const [resources, setResources] = useState<Resource[]>(MOCK_RESOURCES);
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [showGenerationForm, setShowGenerationForm] = useState(false);
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -130,12 +132,23 @@ export default function ResourcesPage() {
   };
 
   // Handle generate new resource
-  const handleGenerateResource = async () => {
+  const handleGenerateResource = () => {
+    setShowGenerationForm(true);
+  };
+
+  // Handle form submission
+  const handleFormSubmit = async (request: any) => {
     setIsGenerating(true);
     try {
       // TODO: Implement resource generation API call
-      console.log('Generating new resource...');
+      console.log('Generating resource with request:', request);
       await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate API call
+      
+      // Close form and show success
+      setShowGenerationForm(false);
+      
+      // TODO: Add the new resource to the list
+      console.log('Resource generated successfully');
     } catch (error) {
       console.error('Failed to generate resource:', error);
     } finally {
@@ -204,6 +217,15 @@ export default function ResourcesPage() {
           onResourceClick={handleResourceClick}
           onGenerateResource={handleGenerateResource}
           isLoading={isLoading}
+        />
+
+        {/* Resource Generation Form */}
+        <ResourceGenerationForm
+          customerId={user?.id || ''}
+          onGenerate={handleFormSubmit}
+          onClose={() => setShowGenerationForm(false)}
+          isOpen={showGenerationForm}
+          isLoading={isGenerating}
         />
       </div>
     </div>

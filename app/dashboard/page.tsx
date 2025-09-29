@@ -2,106 +2,104 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase, getCurrentUser } from '@/lib/supabase/client';
-import { auth } from '@/lib/api/client';
-import SimplifiedDashboard from '@/src/features/dashboard/SimplifiedDashboard';
+import { useSupabaseAuth } from '@/src/shared/hooks/useSupabaseAuth';
+import { EnterpriseNavigationV2 } from '@/src/shared/components/layout/EnterpriseNavigationV2';
+import { ProgressOverview } from '@/src/shared/components/dashboard/ProgressOverview';
+import { MilestonesCard } from '@/src/shared/components/dashboard/MilestonesCard';
+import { QuickActions } from '@/src/shared/components/dashboard/QuickActions';
+import { RecentActivity } from '@/src/shared/components/dashboard/RecentActivity';
+import { InsightsPanel } from '@/src/shared/components/dashboard/InsightsPanel';
+import { EnterpriseDashboard } from '@/src/shared/components/dashboard/EnterpriseDashboard';
 import { useCustomer, useProgress, useMilestones, useProgressInsights } from '@/lib/hooks/useAPI';
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [customerId, setCustomerId] = useState<string | undefined>();
-  const [customerData, setCustomerData] = useState<any>(null);
+  const { user, loading: authLoading } = useSupabaseAuth();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        // Check Supabase auth first (client-side only)
-        const { data: { session }, error } = await supabase.auth.getSession();
-        if (!error && session?.user) {
-          // Use Supabase user ID as customer ID
-          const userId = session.user.id;
-          console.log('✅ Dashboard - Supabase user authenticated:', { 
-            userId, 
-            email: session.user.email 
-          });
-          setCustomerId(userId);
-          setCustomerData({
-            id: userId,
-            email: session.user.email,
-            name: session.user.user_metadata?.name || session.user.email,
-            isSupabaseUser: true
-          });
-          return;
-        }
+    if (authLoading) return; // Wait for auth to load
+    
+    if (!user) {
+      router.push('/login');
+    }
+  }, [user, authLoading, router]);
 
-        // Fallback to legacy auth
-        const id = auth.getCustomerId();
-        if (!id || !auth.isAuthenticated()) {
-          router.push('/login?redirectTo=/dashboard/');
-        } else {
-          setCustomerId(id);
-          const customer = auth.getCurrentCustomer();
-          setCustomerData(customer);
-        }
-      } catch (error) {
-        console.error('Auth check failed:', error);
-        router.push('/login?redirectTo=/dashboard/');
-      }
-    };
+  const { data: customer, isLoading: customerLoading } = useCustomer(user?.id);
+  const { data: progress, isLoading: progressLoading } = useProgress(user?.id);
+  const { data: milestones, isLoading: milestonesLoading } = useMilestones(user?.id);
+  const { data: insights, isLoading: insightsLoading } = useProgressInsights(user?.id);
 
-    // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session?.user) {
-        const userId = session.user.id;
-        setCustomerId(userId);
-        setCustomerData({
-          id: userId,
-          email: session.user.email,
-          name: session.user.user_metadata?.name || session.user.email,
-          isSupabaseUser: true
-        });
-      } else if (event === 'SIGNED_OUT') {
-        router.push('/login?redirectTo=/dashboard/');
-      }
-    });
+  if (authLoading) {
+    return (
+      <EnterpriseNavigationV2>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-text-muted">Loading...</div>
+        </div>
+      </EnterpriseNavigationV2>
+    );
+  }
 
-    checkAuth();
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [router]);
-
-  // Skip API calls for Supabase users to prevent failures
-  const isSupabaseUser = customerData?.isSupabaseUser;
-  const { data: customer, isLoading: customerLoading } = useCustomer(isSupabaseUser ? undefined : customerId);
-  const { data: progress, isLoading: progressLoading } = useProgress(isSupabaseUser ? undefined : customerId);
-  const { data: milestones, isLoading: milestonesLoading } = useMilestones(isSupabaseUser ? undefined : customerId);
-  const { data: insights, isLoading: insightsLoading } = useProgressInsights(isSupabaseUser ? undefined : customerId);
-
-  if (!customerId) {
+  if (!user) {
     return null;
   }
 
   const isLoading = customerLoading || progressLoading || milestonesLoading || insightsLoading;
 
-  // Enhanced dashboard routing based on customer type
-  const shouldUseSimplifiedDashboard = true; // For now, default to enhanced React SPA dashboard
-
-  if (shouldUseSimplifiedDashboard) {
-    return (
-      <SimplifiedDashboard 
-        customerId={customerId} 
-        customerData={customerData}
-      />
-    );
-  }
-
-  // Fallback to simplified dashboard (this code path is not reached due to shouldUseSimplifiedDashboard = true)
   return (
-    <SimplifiedDashboard 
-      customerId={customerId} 
-      customerData={customerData}
-    />
+    <EnterpriseNavigationV2>
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-text-primary">
+              Welcome back{customer?.data?.name ? `, ${customer.data.name}` : ''}!
+            </h1>
+            <p className="text-text-muted mt-1">
+              Here's your revenue intelligence overview
+            </p>
+          </div>
+          <div className="text-sm text-text-subtle">
+            User ID: <span className="font-mono bg-surface px-2 py-1 rounded">{user.id.slice(0, 8)}...</span>
+          </div>
+        </div>
+
+        {/* Progress Overview */}
+        <ProgressOverview 
+          progress={progress?.data} 
+          isLoading={isLoading}
+        />
+
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Column - 2 cols */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Milestones */}
+            <MilestonesCard 
+              milestones={milestones?.data} 
+              isLoading={milestonesLoading}
+              customerId={user.id}
+            />
+
+            {/* Recent Activity */}
+            <RecentActivity 
+              activities={progress?.data?.recentActions}
+              isLoading={progressLoading}
+            />
+          </div>
+
+          {/* Right Column - 1 col */}
+          <div className="space-y-6">
+            {/* Quick Actions */}
+            <QuickActions customerId={user.id} />
+
+            {/* Insights */}
+            <InsightsPanel 
+              insights={insights?.data}
+              isLoading={insightsLoading}
+            />
+          </div>
+        </div>
+      </div>
+    </EnterpriseNavigationV2>
   );
 }

@@ -1,5 +1,6 @@
 import airtableService from '../services/airtableService.js';
 import aiService from '../services/aiService.js';
+import makeService from '../services/makeService.js';
 import logger from '../utils/logger.js';
 
 const customerController = {
@@ -189,7 +190,11 @@ const customerController = {
         'Last Accessed': new Date().toISOString()
       });
 
-      // Note: Make.com automation removed
+      // Trigger automation workflow if requested
+      if (triggerAutomation) {
+        const automationResult = await makeService.triggerICPAnalysis(customer);
+        logger.info(`Automation triggered: ${automationResult.success}`);
+      }
 
       res.status(200).json({
         success: true,

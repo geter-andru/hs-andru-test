@@ -2,25 +2,33 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { auth } from '@/lib/api/client';
-import { DashboardLayout } from '@/src/shared/components/layout/DashboardLayout';
-import { ExportCenter } from '@/src/features/dashboard/ExportCenter';
+import { useSupabaseAuth } from '@/src/shared/hooks/useSupabaseAuth';
+import { EnterpriseNavigationV2 } from '@/src/shared/components/layout/EnterpriseNavigationV2';
+import { ExportCenter } from '@/src/shared/components/export/ExportCenter';
 
 export default function ExportsPage() {
   const router = useRouter();
-  const [customerId, setCustomerId] = useState<string | undefined>();
+  const { user, loading: authLoading } = useSupabaseAuth();
   const [exportStage, setExportStage] = useState(0); // Track export workflow stage
 
   useEffect(() => {
-    const id = auth.getCustomerId();
-    if (!id || !auth.isAuthenticated()) {
+    if (authLoading) return; // Wait for auth to load
+    
+    if (!user) {
       router.push('/login');
-    } else {
-      setCustomerId(id);
+      return;
     }
-  }, [router]);
+  }, [user, authLoading, router]);
 
-  if (!customerId) {
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-gray-400">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
     return null;
   }
 
@@ -28,66 +36,34 @@ export default function ExportsPage() {
     console.log('Exporting:', format, options);
     // Here you would implement the actual export logic
     // For now, we'll just log the action
+    setExportStage(1);
+    
+    // Simulate export process
+    setTimeout(() => {
+      setExportStage(2);
+      setTimeout(() => setExportStage(0), 3000);
+    }, 2000);
   };
 
   return (
-    <DashboardLayout>
+    <EnterpriseNavigationV2>
       <div className="space-y-6">
-        {/* Header with Materials Gradient */}
+        {/* Header */}
         <div className="mb-8">
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 rounded-2xl opacity-10"></div>
-            <div className="relative p-6 rounded-2xl border border-slate-700">
-              <div className="flex items-center space-x-3">
-                <div className="w-3 h-3 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full"></div>
-                <h1 className="text-3xl font-bold text-white">
-                  Sales Materials Library
-                </h1>
-              </div>
-              <p className="text-white mt-2">
-                Ready-to-use materials for any prospect or sales situation
-              </p>
-              <div className="mt-4 flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
-                  <span className="text-xs text-white">Executive Ready</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                  <span className="text-xs text-white">Customizable</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                  <span className="text-xs text-white">Multi-format</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Export Workflow Progress */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-sm text-white">
-              {exportStage} of 4 export steps completed
-            </span>
-            <span className="text-sm text-white">Export Progress</span>
-          </div>
-          <div className="flex items-center justify-between">
-            {[0,1,2,3,4].map(step => (
-              <div key={step} className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                step <= exportStage ? 'bg-pink-500 ring-4 ring-pink-500/30' : 'bg-slate-600'
-              }`} />
-            ))}
-          </div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            Export Center
+          </h1>
+          <p className="text-gray-600 dark:text-gray-300">
+            Export your data in various formats for analysis and sharing
+          </p>
         </div>
 
         {/* Export Center */}
         <ExportCenter 
-          customerId={customerId}
+          customerId={user.id} 
           onExport={handleExport}
         />
       </div>
-    </DashboardLayout>
+    </EnterpriseNavigationV2>
   );
 }

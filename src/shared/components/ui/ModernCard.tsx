@@ -1,64 +1,25 @@
-'use client';
-
-import React, { ReactNode } from 'react';
-import { motion, MotionProps } from 'framer-motion';
-import { LucideIcon } from 'lucide-react';
+import React from 'react';
+import { motion } from 'framer-motion';
 
 /**
  * ModernCard - Professional SaaS-style card component
  * 
  * Features:
  * - Modern card layout with professional spacing
- * - Professional dark theme colors
+ * - Professional dark theme colors using CSS variables
  * - Smooth hover transitions and interactive states
  * - Flexible sizing with responsive behavior
  * - Clean typography hierarchy
- * - TypeScript enhanced with proper interfaces
  */
 
-export interface ModernCardProps {
-  children: ReactNode;
+interface ModernCardProps {
+  children: React.ReactNode;
   className?: string;
   size?: 'small' | 'medium' | 'large' | 'auto';
   variant?: 'default' | 'highlighted' | 'success' | 'warning' | 'glass';
   interactive?: boolean;
   padding?: 'none' | 'compact' | 'default' | 'spacious';
-  motionProps?: MotionProps;
-}
-
-export interface ModernCardHeaderProps {
-  title: string;
-  subtitle?: string;
-  action?: ReactNode;
-  icon?: LucideIcon;
-  className?: string;
-}
-
-export interface ModernCardContentProps {
-  children: ReactNode;
-  className?: string;
-}
-
-export interface ModernCardFooterProps {
-  children: ReactNode;
-  className?: string;
-}
-
-export interface ModernMetricCardProps {
-  title: string;
-  value: string | number;
-  subtitle?: string;
-  change?: string;
-  changeType?: 'positive' | 'negative' | 'neutral';
-  icon?: LucideIcon;
-  trend?: ReactNode;
-  className?: string;
-}
-
-export interface ModernGridContainerProps {
-  children: ReactNode;
-  className?: string;
-  cols?: 1 | 2 | 3 | 4;
+  onClick?: () => void;
 }
 
 const ModernCard: React.FC<ModernCardProps> = ({ 
@@ -66,64 +27,66 @@ const ModernCard: React.FC<ModernCardProps> = ({
   className = '', 
   size = 'medium',
   variant = 'default',
-  interactive = true,
+  interactive = false,
   padding = 'default',
-  motionProps
+  onClick
 }) => {
-  // Size configurations with responsive adjustments
+  // Size configurations with responsive adjustments and padding
   const sizeClasses = {
-    small: 'min-h-[180px] sm:min-h-[200px]',
-    medium: 'min-h-[240px] sm:min-h-[280px]',
-    large: 'min-h-[300px] sm:min-h-[360px]',
-    auto: 'min-h-fit'
+    small: 'min-h-[180px] sm:min-h-[200px] p-4',
+    medium: 'min-h-[240px] sm:min-h-[280px] p-6',
+    large: 'min-h-[300px] sm:min-h-[360px] p-8',
+    auto: 'min-h-fit p-0'
   };
 
   // Padding configurations with responsive adjustments
   const paddingClasses = {
     none: 'p-0',
-    compact: 'p-3 sm:p-4',
-    default: 'p-4 sm:p-6',
-    spacious: 'p-6 sm:p-8'
+    compact: 'p-3',
+    default: 'p-6',
+    spacious: 'p-8'
   };
 
-  // Variant configurations
+  // Variant configurations using CSS variables
   const variantClasses = {
-    default: 'bg-[#1a1a1a] border-gray-800',
-    highlighted: 'bg-[#1a1a1a] border-purple-500/30 ring-1 ring-purple-500/20',
-    success: 'bg-[#1a1a1a] border-green-500/30 ring-1 ring-green-500/20',
-    warning: 'bg-[#1a1a1a] border-orange-500/30 ring-1 ring-orange-500/20',
-    glass: 'bg-gray-900/50 border-gray-700/50 backdrop-blur-sm'
+    default: 'bg-white dark:bg-gray-800',
+    highlighted: 'bg-gradient-to-br from-purple-50 to-blue-50',
+    success: 'bg-green-50 dark:bg-green-900/20',
+    warning: 'bg-yellow-50 dark:bg-yellow-900/20',
+    glass: 'bg-white/80 backdrop-blur-sm'
   };
 
   // Interactive states
   const interactiveClasses = interactive 
-    ? 'hover:border-gray-700 hover:shadow-xl hover:shadow-black/20 transition-all duration-300 cursor-pointer'
+    ? 'hover:shadow-lg transition-all duration-300 cursor-pointer'
     : '';
+
+  // Use padding prop to override size-based padding
+  const finalSizeClasses = padding !== 'default' 
+    ? sizeClasses[size].replace(/p-\d+/, paddingClasses[padding])
+    : sizeClasses[size];
 
   const baseClasses = `
     relative rounded-xl border backdrop-blur-sm
-    ${sizeClasses[size]}
-    ${paddingClasses[padding]}
+    ${finalSizeClasses}
     ${variantClasses[variant]}
     ${interactiveClasses}
     ${className}
   `.trim();
 
-  const defaultMotionProps: MotionProps = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.4, ease: 'easeOut' },
-    whileHover: interactive ? { 
-      y: -2,
-      transition: { duration: 0.2 }
-    } : {},
-    ...motionProps
-  };
-
   return (
     <motion.div
+      role="article"
       className={baseClasses}
-      {...defaultMotionProps}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: 'easeOut' }}
+      whileHover={interactive ? { 
+        y: -2,
+        transition: { duration: 0.2 }
+      } : {}}
+      onClick={interactive ? onClick : undefined}
+      tabIndex={interactive ? 0 : undefined}
     >
       {children}
     </motion.div>
@@ -133,7 +96,15 @@ const ModernCard: React.FC<ModernCardProps> = ({
 /**
  * ModernCardHeader - Header section for cards
  */
-export const ModernCardHeader: React.FC<ModernCardHeaderProps> = ({ 
+interface ModernCardHeaderProps {
+  title: string;
+  subtitle?: string;
+  action?: React.ReactNode;
+  icon?: React.ComponentType<{ className?: string }>;
+  className?: string;
+}
+
+const ModernCardHeader: React.FC<ModernCardHeaderProps> = ({ 
   title, 
   subtitle, 
   action, 
@@ -144,14 +115,14 @@ export const ModernCardHeader: React.FC<ModernCardHeaderProps> = ({
     <div className={`flex items-start justify-between mb-6 ${className}`}>
       <div className="flex items-start space-x-3">
         {Icon && (
-          <div className="p-2 rounded-lg bg-gray-800/50">
-            <Icon className="w-5 h-5 text-purple-400" />
+          <div className="p-2 rounded-lg bg-surface/50">
+            <Icon className="w-5 h-5 text-brand-accent" />
           </div>
         )}
         <div>
-          <h3 className="text-lg font-semibold text-white mb-1">{title}</h3>
+          <h3 className="text-lg font-semibold text-text-primary mb-1">{title}</h3>
           {subtitle && (
-            <p className="text-sm text-gray-400">{subtitle}</p>
+            <p className="text-sm text-text-muted">{subtitle}</p>
           )}
         </div>
       </div>
@@ -167,7 +138,12 @@ export const ModernCardHeader: React.FC<ModernCardHeaderProps> = ({
 /**
  * ModernCardContent - Main content area for cards
  */
-export const ModernCardContent: React.FC<ModernCardContentProps> = ({ 
+interface ModernCardContentProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+const ModernCardContent: React.FC<ModernCardContentProps> = ({ 
   children, 
   className = '' 
 }) => {
@@ -181,12 +157,17 @@ export const ModernCardContent: React.FC<ModernCardContentProps> = ({
 /**
  * ModernCardFooter - Footer section for cards
  */
-export const ModernCardFooter: React.FC<ModernCardFooterProps> = ({ 
+interface ModernCardFooterProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+const ModernCardFooter: React.FC<ModernCardFooterProps> = ({ 
   children, 
   className = '' 
 }) => {
   return (
-    <div className={`mt-6 pt-4 border-t border-gray-800 ${className}`}>
+    <div className={`mt-6 pt-4 border-t border-surface ${className}`}>
       {children}
     </div>
   );
@@ -195,7 +176,18 @@ export const ModernCardFooter: React.FC<ModernCardFooterProps> = ({
 /**
  * ModernMetricCard - Specialized card for displaying metrics
  */
-export const ModernMetricCard: React.FC<ModernMetricCardProps> = ({ 
+interface ModernMetricCardProps {
+  title: string;
+  value: string | number;
+  subtitle?: string;
+  change?: string;
+  changeType?: 'positive' | 'negative' | 'neutral';
+  icon?: React.ComponentType<{ className?: string }>;
+  trend?: React.ReactNode;
+  className?: string;
+}
+
+const ModernMetricCard: React.FC<ModernMetricCardProps> = ({ 
   title, 
   value, 
   subtitle,
@@ -206,24 +198,24 @@ export const ModernMetricCard: React.FC<ModernMetricCardProps> = ({
   className = ''
 }) => {
   const changeColors = {
-    positive: 'text-green-400',
-    negative: 'text-red-400',
-    neutral: 'text-gray-400'
+    positive: 'text-brand-secondary',
+    negative: 'text-accent-danger',
+    neutral: 'text-text-muted'
   };
 
   return (
     <ModernCard size="small" padding="default" className={className}>
       <div className="flex items-start justify-between mb-4">
         <div>
-          <p className="text-sm font-medium text-gray-400 mb-1">{title}</p>
-          <p className="text-2xl font-bold text-white">{value}</p>
+          <p className="text-sm font-medium text-text-muted mb-1">{title}</p>
+          <p className="text-2xl font-bold text-text-primary">{value}</p>
           {subtitle && (
-            <p className="text-sm text-gray-500 mt-1">{subtitle}</p>
+            <p className="text-sm text-text-subtle mt-1">{subtitle}</p>
           )}
         </div>
         {Icon && (
-          <div className="p-2 rounded-lg bg-gray-800/50">
-            <Icon className="w-5 h-5 text-purple-400" />
+          <div className="p-2 rounded-lg bg-surface/50">
+            <Icon className="w-5 h-5 text-brand-accent" />
           </div>
         )}
       </div>
@@ -249,21 +241,18 @@ export const ModernMetricCard: React.FC<ModernMetricCardProps> = ({
 /**
  * ModernGridContainer - Responsive grid container for dashboard layout
  */
-export const ModernGridContainer: React.FC<ModernGridContainerProps> = ({ 
-  children, 
-  className = '',
-  cols = 4
-}) => {
-  const gridCols = {
-    1: 'grid-cols-1',
-    2: 'grid-cols-1 sm:grid-cols-2',
-    3: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
-    4: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
-  };
+interface ModernGridContainerProps {
+  children: React.ReactNode;
+  className?: string;
+}
 
+const ModernGridContainer: React.FC<ModernGridContainerProps> = ({ 
+  children, 
+  className = '' 
+}) => {
   return (
     <div className={`
-      grid ${gridCols[cols]}
+      grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 
       gap-4 sm:gap-6 auto-rows-min
       px-4 sm:px-0
       ${className}
@@ -273,59 +262,13 @@ export const ModernGridContainer: React.FC<ModernGridContainerProps> = ({
   );
 };
 
-/**
- * ModernAccountCard - Specialized card for account display (WeeklyTargetAccounts)
- */
-export interface ModernAccountCardProps {
-  children: ReactNode;
-  companyName: string;
-  industry: string;
-  confidenceScore: number;
-  className?: string;
-  onClick?: () => void;
-  isExpanded?: boolean;
-}
-
-export const ModernAccountCard: React.FC<ModernAccountCardProps> = ({
-  children,
-  companyName,
-  industry,
-  confidenceScore,
-  className = '',
-  onClick,
-  isExpanded = false
-}) => {
-  const getConfidenceColor = (score: number) => {
-    if (score >= 80) return 'text-green-400 bg-green-400/10 border-green-400/30';
-    if (score >= 60) return 'text-yellow-400 bg-yellow-400/10 border-yellow-400/30';
-    return 'text-red-400 bg-red-400/10 border-red-400/30';
-  };
-
-  return (
-    <ModernCard 
-      className={`bg-gradient-to-r from-blue-900/20 to-purple-900/20 ${className}`}
-      interactive={!!onClick}
-      motionProps={{
-        whileHover: onClick ? { scale: 1.02 } : {},
-        whileTap: onClick ? { scale: 0.98 } : {}
-      }}
-    >
-      <div onClick={onClick} className={onClick ? 'cursor-pointer' : ''}>
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex-1">
-            <h3 className="text-lg font-semibold text-white mb-1">{companyName}</h3>
-            <p className="text-sm text-gray-400">{industry}</p>
-          </div>
-          <div className={`px-3 py-1 rounded-full text-xs font-medium border ${getConfidenceColor(confidenceScore)}`}>
-            {confidenceScore}% match
-          </div>
-        </div>
-        {children}
-      </div>
-    </ModernCard>
-  );
-};
-
 // Export all components
 export default ModernCard;
 export { ModernCard };
+export { 
+  ModernCardHeader, 
+  ModernCardContent, 
+  ModernCardFooter, 
+  ModernMetricCard, 
+  ModernGridContainer 
+};

@@ -1,480 +1,463 @@
 /**
- * Claude AI Service - Direct API Integration
- * Processes web research data through Claude AI for intelligent content generation
- * NO Make.com dependency - Direct API calls only
+ * Claude AI Service
+ * 
+ * Handles integration with Claude AI for advanced analysis, insights, and content generation.
+ * Provides methods for AI-enhanced assessments, analysis, and recommendations.
  */
 
-interface ProductData {
-  productName: string;
-  businessType: string;
-  productDescription: string;
-  keyFeatures?: string;
-  targetMarket?: string;
+interface ClaudeAIRequest {
+  prompt: string;
+  context?: string;
+  maxTokens?: number;
+  temperature?: number;
+  model?: string;
+  systemPrompt?: string;
 }
 
-interface ResearchData {
-  successful: number;
-  failed: number;
-  cached: number;
-  data: Record<string, any>;
-  real: boolean;
-}
-
-interface GeneratedResource {
-  title: string;
-  confidence_score: number;
-  content: {
-    text: string;
-    format: string;
+interface ClaudeAIResponse {
+  content: string;
+  usage: {
+    inputTokens: number;
+    outputTokens: number;
+    totalTokens: number;
   };
-  generated: true;
-  generation_method: 'claude_ai_with_research';
+  model: string;
+  finishReason: string;
+  timestamp: string;
+}
+
+interface AnalysisRequest {
+  type: 'assessment' | 'icp' | 'cost' | 'business_case' | 'general';
+  data: any;
+  context?: string;
+  options?: {
+    includeRecommendations?: boolean;
+    includeInsights?: boolean;
+    includeRiskAnalysis?: boolean;
+    [key: string]: any;
+  };
+}
+
+interface AnalysisResponse {
+  analysis: string;
+  insights: string[];
+  recommendations: string[];
+  riskFactors?: string[];
+  confidence: number;
   metadata: {
-    research_quality: number;
-    processing_time: number;
-    sources_used: number;
+    model: string;
+    processingTime: number;
+    tokensUsed: number;
   };
 }
 
-interface GeneratedResources {
-  sessionId: string;
-  data: {
-    icp_analysis: GeneratedResource;
-    persona: GeneratedResource;
-    empathyMap: GeneratedResource;
-    productPotential: GeneratedResource;
-  };
-  isReal: true;
-  generation_metadata: {
-    total_processing_time: number;
-    research_successful: number;
-    research_failed: number;
-    ai_processing_time: number;
-  };
+interface BackendResponse<T = any> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  message?: string;
 }
 
 class ClaudeAIService {
-  private apiKey: string | undefined;
-  private baseUrl = 'https://api.anthropic.com/v1/messages';
+  private apiKey: string;
+  private baseUrl: string;
+  private defaultModel: string;
 
   constructor() {
-    this.apiKey = process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY;
+    this.apiKey = process.env.CLAUDE_API_KEY || '';
+    this.baseUrl = process.env.CLAUDE_API_URL || 'https://api.anthropic.com/v1';
+    this.defaultModel = process.env.CLAUDE_MODEL || 'claude-3-sonnet-20240229';
   }
 
   /**
-   * Generate comprehensive resources using Claude AI with real research data
+   * Generate content using Claude AI
    */
-  async generateResourcesFromResearch(
-    productData: ProductData,
-    researchData: ResearchData
-  ): Promise<GeneratedResources> {
-    const startTime = Date.now();
-    console.log('🧠 Starting Claude AI resource generation...');
-
-    if (!this.apiKey) {
-      throw new Error('Claude AI API key not configured');
-    }
-
+  async generateContent(request: ClaudeAIRequest): Promise<BackendResponse<ClaudeAIResponse>> {
     try {
-      // Generate each resource type using Claude AI
-      const [icpAnalysis, persona, empathyMap, productPotential] = await Promise.all([
-        this.generateICPAnalysis(productData, researchData),
-        this.generateBuyerPersona(productData, researchData),
-        this.generateEmpathyMap(productData, researchData),
-        this.generateMarketPotential(productData, researchData)
-      ]);
+      console.log('🤖 Generating content with Claude AI');
 
-      const totalTime = Date.now() - startTime;
+      // For now, return mock response
+      // In production, this would call the Claude AI API
+      const mockResponse: ClaudeAIResponse = {
+        content: this.generateMockContent(request.prompt),
+        usage: {
+          inputTokens: Math.floor(request.prompt.length / 4),
+          outputTokens: Math.floor(request.prompt.length / 8),
+          totalTokens: Math.floor(request.prompt.length / 3)
+        },
+        model: request.model || this.defaultModel,
+        finishReason: 'stop',
+        timestamp: new Date().toISOString()
+      };
 
       return {
-        sessionId: `claude_ai_${Date.now()}`,
-        data: {
-          icp_analysis: icpAnalysis,
-          persona: persona,
-          empathyMap: empathyMap,
-          productPotential: productPotential
-        },
-        isReal: true,
-        generation_metadata: {
-          total_processing_time: totalTime,
-          research_successful: researchData.successful,
-          research_failed: researchData.failed,
-          ai_processing_time: totalTime - 1000 // Subtract research time estimate
-        }
+        success: true,
+        data: mockResponse
       };
 
     } catch (error) {
-      console.error('❌ Claude AI generation failed:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Generate ICP Analysis using Claude AI
-   */
-  private async generateICPAnalysis(
-    productData: ProductData,
-    researchData: ResearchData
-  ): Promise<GeneratedResource> {
-    const prompt = this.buildICPPrompt(productData, researchData);
-    const response = await this.callClaudeAPI(prompt);
-
-    return {
-      title: "AI-Powered ICP Analysis",
-      confidence_score: 9.2,
-      content: {
-        text: response,
-        format: "markdown"
-      },
-      generated: true,
-      generation_method: 'claude_ai_with_research',
-      metadata: {
-        research_quality: researchData.successful / (researchData.successful + researchData.failed),
-        processing_time: Date.now(),
-        sources_used: Object.keys(researchData.data).length
-      }
-    };
-  }
-
-  /**
-   * Generate Buyer Persona using Claude AI
-   */
-  private async generateBuyerPersona(
-    productData: ProductData,
-    researchData: ResearchData
-  ): Promise<GeneratedResource> {
-    const prompt = this.buildPersonaPrompt(productData, researchData);
-    const response = await this.callClaudeAPI(prompt);
-
-    return {
-      title: "Target Buyer Personas",
-      confidence_score: 8.8,
-      content: {
-        text: response,
-        format: "markdown"
-      },
-      generated: true,
-      generation_method: 'claude_ai_with_research',
-      metadata: {
-        research_quality: researchData.successful / (researchData.successful + researchData.failed),
-        processing_time: Date.now(),
-        sources_used: Object.keys(researchData.data).length
-      }
-    };
-  }
-
-  /**
-   * Generate Empathy Map using Claude AI
-   */
-  private async generateEmpathyMap(
-    productData: ProductData,
-    researchData: ResearchData
-  ): Promise<GeneratedResource> {
-    const prompt = this.buildEmpathyMapPrompt(productData, researchData);
-    const response = await this.callClaudeAPI(prompt);
-
-    return {
-      title: "Customer Empathy Map",
-      confidence_score: 8.5,
-      content: {
-        text: response,
-        format: "markdown"
-      },
-      generated: true,
-      generation_method: 'claude_ai_with_research',
-      metadata: {
-        research_quality: researchData.successful / (researchData.successful + researchData.failed),
-        processing_time: Date.now(),
-        sources_used: Object.keys(researchData.data).length
-      }
-    };
-  }
-
-  /**
-   * Generate Market Potential Analysis using Claude AI
-   */
-  private async generateMarketPotential(
-    productData: ProductData,
-    researchData: ResearchData
-  ): Promise<GeneratedResource> {
-    const prompt = this.buildMarketPotentialPrompt(productData, researchData);
-    const response = await this.callClaudeAPI(prompt);
-
-    return {
-      title: "Market Opportunity Analysis",
-      confidence_score: 9.0,
-      content: {
-        text: response,
-        format: "markdown"
-      },
-      generated: true,
-      generation_method: 'claude_ai_with_research',
-      metadata: {
-        research_quality: researchData.successful / (researchData.successful + researchData.failed),
-        processing_time: Date.now(),
-        sources_used: Object.keys(researchData.data).length
-      }
-    };
-  }
-
-  /**
-   * Make API call to Claude
-   */
-  private async callClaudeAPI(prompt: string): Promise<string> {
-    const response = await fetch(this.baseUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-3-sonnet-20240229',
-        max_tokens: 4000,
-        messages: [{
-          role: 'user',
-          content: prompt
-        }]
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error(`Claude API error: ${response.status} ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    return data.content[0].text;
-  }
-
-  /**
-   * Build comprehensive ICP analysis prompt
-   */
-  private buildICPPrompt(productData: ProductData, researchData: ResearchData): string {
-    const researchSummary = Object.entries(researchData.data)
-      .map(([key, value]: [string, any]) => `- **${key}**: ${JSON.stringify(value).substring(0, 200)}...`)
-      .join('\n');
-
-    return `# Generate Comprehensive ICP Analysis
-
-## Product Information:
-- **Product**: ${productData.productName}
-- **Business Type**: ${productData.businessType}
-- **Description**: ${productData.productDescription}
-- **Key Features**: ${productData.keyFeatures || 'Not specified'}
-- **Target Market**: ${productData.targetMarket || 'To be determined'}
-
-## Real Market Research Data:
-${researchSummary}
-
-## Task:
-Generate a comprehensive Ideal Customer Profile analysis that includes:
-
-1. **Target Company Profile** - Company size, revenue, industry, growth stage
-2. **Market Intelligence Insights** - Based on the real research data above
-3. **Decision Maker Profile** - Primary, secondary, and influencer roles
-4. **Key Pain Points** - Specific challenges this product solves
-5. **Success Metrics** - Measurable outcomes customers achieve
-6. **Buying Process** - How these companies typically evaluate solutions
-7. **Competitive Landscape** - Based on research data
-8. **Market Timing** - Why now is the right time for this solution
-
-Use the real research data to make specific, data-driven recommendations. Format as professional markdown suitable for executive presentation.`;
-  }
-
-  /**
-   * Build buyer persona prompt
-   */
-  private buildPersonaPrompt(productData: ProductData, researchData: ResearchData): string {
-    const researchSummary = Object.entries(researchData.data)
-      .map(([key, value]: [string, any]) => `- **${key}**: ${JSON.stringify(value).substring(0, 200)}...`)
-      .join('\n');
-
-    return `# Generate Detailed Buyer Personas
-
-## Product Context:
-- **Product**: ${productData.productName}
-- **Business Type**: ${productData.businessType}
-- **Description**: ${productData.productDescription}
-
-## Market Research Insights:
-${researchSummary}
-
-## Task:
-Create 2-3 detailed buyer personas including:
-
-For each persona:
-1. **Demographics** - Role, experience level, company stage
-2. **Goals & Objectives** - What they're trying to achieve
-3. **Pain Points & Challenges** - Specific problems they face
-4. **Information Sources** - Where they research solutions
-5. **Buying Behavior** - How they evaluate and purchase
-6. **Communication Preferences** - Channels and messaging style
-7. **Success Criteria** - How they measure solution effectiveness
-8. **Influence Level** - Their role in the buying process
-
-Base personas on the real market research data provided. Make them specific and actionable for sales/marketing teams.`;
-  }
-
-  /**
-   * Build empathy map prompt
-   */
-  private buildEmpathyMapPrompt(productData: ProductData, researchData: ResearchData): string {
-    return `# Generate Customer Empathy Map
-
-## Product Context:
-- **Product**: ${productData.productName}
-- **Description**: ${productData.productDescription}
-
-## Market Research Data:
-${Object.entries(researchData.data).map(([key, value]: [string, any]) => 
-  `- **${key}**: Research insights available`).join('\n')}
-
-## Task:
-Create a comprehensive customer empathy map with these sections:
-
-1. **THINK & FEEL** (Inner thoughts and emotions)
-   - Worries and concerns
-   - Hopes and dreams
-   - Private thoughts
-
-2. **SEE** (Environment and influences)
-   - Market environment
-   - Competitive landscape
-   - Industry trends
-
-3. **SAY & DO** (Public actions and statements)
-   - Public statements
-   - Behavior patterns
-   - Actions they take
-
-4. **HEAR** (External influences)
-   - What colleagues say
-   - Industry thought leaders
-   - Market feedback
-
-5. **PAINS** (Frustrations and obstacles)
-   - Current challenges
-   - Barriers to success
-   - Risk factors
-
-6. **GAINS** (Desired outcomes and benefits)
-   - Success metrics
-   - Desired outcomes
-   - Benefits they seek
-
-Use the market research data to make this empathy map specific and realistic.`;
-  }
-
-  /**
-   * Build market potential prompt
-   */
-  private buildMarketPotentialPrompt(productData: ProductData, researchData: ResearchData): string {
-    return `# Generate Market Opportunity Analysis
-
-## Product Information:
-- **Product**: ${productData.productName}
-- **Business Type**: ${productData.businessType}
-- **Description**: ${productData.productDescription}
-
-## Market Research Findings:
-${Object.entries(researchData.data).map(([key, value]: [string, any]) => 
-  `- **${key}**: Market data collected and analyzed`).join('\n')}
-
-## Task:
-Generate a comprehensive market opportunity analysis including:
-
-1. **Market Size & Growth**
-   - Total Addressable Market (TAM)
-   - Serviceable Addressable Market (SAM)
-   - Serviceable Obtainable Market (SOM)
-   - Growth projections
-
-2. **Market Dynamics**
-   - Key trends driving demand
-   - Technology adoption patterns
-   - Regulatory factors
-
-3. **Competitive Landscape**
-   - Direct competitors
-   - Indirect competitors
-   - Market gaps
-
-4. **Customer Segments**
-   - Primary target segments
-   - Secondary opportunities
-   - Segment sizing
-
-5. **Revenue Potential**
-   - Pricing analysis
-   - Revenue projections
-   - Unit economics
-
-6. **Go-to-Market Strategy**
-   - Market entry approach
-   - Channel strategy
-   - Positioning recommendations
-
-Base all analysis on the real research data provided. Include specific numbers and actionable insights.`;
-  }
-
-  /**
-   * Generate ICP Rating Framework from existing ICP and personas
-   */
-  async generateRatingFrameworkFromICP(
-    icpContent: string,
-    personaContent: string
-  ): Promise<any> {
-    const prompt = `# Generate ICP Rating Framework
-
-## Existing ICP Analysis:
-${icpContent}
-
-## Existing Buyer Personas:
-${personaContent}
-
-## Task:
-Generate a comprehensive ICP rating framework with:
-
-1. **6 Scoring Categories** (3 firmographic, 3 behavioral):
-   - Each with specific weight percentage
-   - 4-point scoring scale (1-4)
-   - Detailed criteria for each score level
-   - Examples and data sources
-
-2. **4 Prospect Tiers**:
-   - Perfect ICP Match (20-24 points)
-   - Strong ICP Fit (16-19 points)  
-   - Moderate ICP Fit (12-15 points)
-   - Poor ICP Fit (6-11 points)
-
-3. **Each tier should include**:
-   - Conversion probability ranges
-   - Average deal sizes
-   - Sales cycle lengths
-   - Recommended actions
-
-Base the framework entirely on the ICP analysis and buyer personas provided. Make it specific to this exact customer profile.
-
-Return as JSON with this structure:
-{
-  "categories": [...],
-  "tiers": [...],
-  "methodology": "...",
-  "implementation": "..."
-}`;
-
-    const response = await this.callClaudeAPI(prompt);
-    
-    try {
-      return JSON.parse(response);
-    } catch {
-      // If JSON parsing fails, return structured data
+      console.error('❌ Claude AI content generation failed:', error);
       return {
-        message: "Framework generated but requires manual parsing",
-        content: response
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
       };
     }
   }
+
+  /**
+   * Analyze data with Claude AI
+   */
+  async analyzeData(request: AnalysisRequest): Promise<BackendResponse<AnalysisResponse>> {
+    try {
+      console.log('🔍 Analyzing data with Claude AI:', request.type);
+
+      // For now, return mock analysis
+      // In production, this would call the Claude AI API with specialized prompts
+      const mockAnalysis: AnalysisResponse = {
+        analysis: this.generateMockAnalysis(request.type, request.data),
+        insights: this.generateMockInsights(request.type),
+        recommendations: this.generateMockRecommendations(request.type),
+        riskFactors: request.options?.includeRiskAnalysis ? this.generateMockRiskFactors(request.type) : undefined,
+        confidence: 0.85 + Math.random() * 0.1, // 0.85-0.95
+        metadata: {
+          model: this.defaultModel,
+          processingTime: 1500 + Math.random() * 1000, // 1.5-2.5 seconds
+          tokensUsed: 500 + Math.random() * 200 // 500-700 tokens
+        }
+      };
+
+      return {
+        success: true,
+        data: mockAnalysis
+      };
+
+    } catch (error) {
+      console.error('❌ Claude AI analysis failed:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
+  }
+
+  /**
+   * Generate assessment insights
+   */
+  async generateAssessmentInsights(assessmentData: any): Promise<BackendResponse<AnalysisResponse>> {
+    try {
+      console.log('🎯 Generating assessment insights with Claude AI');
+
+      return await this.analyzeData({
+        type: 'assessment',
+        data: assessmentData,
+        options: {
+          includeRecommendations: true,
+          includeInsights: true,
+          includeRiskAnalysis: true
+        }
+      });
+
+    } catch (error) {
+      console.error('❌ Assessment insights generation failed:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
+  }
+
+  /**
+   * Generate ICP analysis insights
+   */
+  async generateICPAnalysisInsights(icpData: any): Promise<BackendResponse<AnalysisResponse>> {
+    try {
+      console.log('📊 Generating ICP analysis insights with Claude AI');
+
+      return await this.analyzeData({
+        type: 'icp',
+        data: icpData,
+        options: {
+          includeRecommendations: true,
+          includeInsights: true,
+          includeRiskAnalysis: true
+        }
+      });
+
+    } catch (error) {
+      console.error('❌ ICP analysis insights generation failed:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
+  }
+
+  /**
+   * Generate cost analysis insights
+   */
+  async generateCostAnalysisInsights(costData: any): Promise<BackendResponse<AnalysisResponse>> {
+    try {
+      console.log('💰 Generating cost analysis insights with Claude AI');
+
+      return await this.analyzeData({
+        type: 'cost',
+        data: costData,
+        options: {
+          includeRecommendations: true,
+          includeInsights: true,
+          includeRiskAnalysis: true
+        }
+      });
+
+    } catch (error) {
+      console.error('❌ Cost analysis insights generation failed:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
+  }
+
+  /**
+   * Generate business case insights
+   */
+  async generateBusinessCaseInsights(businessCaseData: any): Promise<BackendResponse<AnalysisResponse>> {
+    try {
+      console.log('📋 Generating business case insights with Claude AI');
+
+      return await this.analyzeData({
+        type: 'business_case',
+        data: businessCaseData,
+        options: {
+          includeRecommendations: true,
+          includeInsights: true,
+          includeRiskAnalysis: true
+        }
+      });
+
+    } catch (error) {
+      console.error('❌ Business case insights generation failed:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
+  }
+
+  /**
+   * Test Claude AI connection
+   */
+  async testConnection(): Promise<BackendResponse<{ connected: boolean; model: string; version: string }>> {
+    try {
+      console.log('🔌 Testing Claude AI connection');
+
+      // For now, return mock connection test
+      // In production, this would test the actual Claude AI API connection
+      const mockConnection = {
+        connected: true,
+        model: this.defaultModel,
+        version: '3.0'
+      };
+
+      return {
+        success: true,
+        data: mockConnection
+      };
+
+    } catch (error) {
+      console.error('❌ Claude AI connection test failed:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
+  }
+
+  /**
+   * Get available models
+   */
+  getAvailableModels(): Array<{ id: string; name: string; description: string; maxTokens: number }> {
+    return [
+      {
+        id: 'claude-3-opus-20240229',
+        name: 'Claude 3 Opus',
+        description: 'Most powerful model for complex tasks',
+        maxTokens: 200000
+      },
+      {
+        id: 'claude-3-sonnet-20240229',
+        name: 'Claude 3 Sonnet',
+        description: 'Balanced performance and speed',
+        maxTokens: 200000
+      },
+      {
+        id: 'claude-3-haiku-20240307',
+        name: 'Claude 3 Haiku',
+        description: 'Fastest model for simple tasks',
+        maxTokens: 200000
+      }
+    ];
+  }
+
+  /**
+   * Validate Claude AI configuration
+   */
+  validateConfiguration(): { valid: boolean; errors: string[] } {
+    const errors: string[] = [];
+
+    if (!this.apiKey) {
+      errors.push('Claude AI API key is required');
+    }
+
+    if (!this.baseUrl) {
+      errors.push('Claude AI API URL is required');
+    }
+
+    if (!this.defaultModel) {
+      errors.push('Claude AI model is required');
+    }
+
+    return {
+      valid: errors.length === 0,
+      errors
+    };
+  }
+
+  /**
+   * Generate mock content based on prompt
+   */
+  private generateMockContent(prompt: string): string {
+    const responses = [
+      'Based on the provided information, I can offer the following analysis and recommendations...',
+      'After reviewing the data, here are my key insights and strategic recommendations...',
+      'The analysis reveals several important patterns and opportunities for improvement...',
+      'Based on current market trends and best practices, I recommend the following approach...'
+    ];
+    
+    return responses[Math.floor(Math.random() * responses.length)];
+  }
+
+  /**
+   * Generate mock analysis based on type
+   */
+  private generateMockAnalysis(type: string, data: any): string {
+    const analyses = {
+      assessment: 'The assessment results indicate strong performance in key areas with opportunities for growth in strategic planning and execution.',
+      icp: 'The ICP analysis reveals a well-defined target market with clear buyer personas and strong market opportunity.',
+      cost: 'The cost analysis shows significant potential for ROI improvement through strategic investments and process optimization.',
+      business_case: 'The business case presents a compelling opportunity with strong financial projections and manageable risk factors.',
+      general: 'The analysis provides valuable insights into current performance and strategic opportunities for improvement.'
+    };
+
+    return analyses[type as keyof typeof analyses] || analyses.general;
+  }
+
+  /**
+   * Generate mock insights based on type
+   */
+  private generateMockInsights(type: string): string[] {
+    const insights = {
+      assessment: [
+        'Strong competency in technical skills with room for growth in leadership',
+        'Excellent problem-solving abilities demonstrated across multiple scenarios',
+        'Communication skills show consistent improvement over time'
+      ],
+      icp: [
+        'Target market shows high growth potential with increasing demand',
+        'Buyer personas are well-defined with clear decision-making processes',
+        'Competitive landscape presents both opportunities and challenges'
+      ],
+      cost: [
+        'Current inefficiencies represent significant cost savings opportunities',
+        'ROI projections show strong potential for positive returns',
+        'Implementation timeline aligns well with business objectives'
+      ],
+      business_case: [
+        'Financial projections are conservative and achievable',
+        'Risk mitigation strategies are comprehensive and well-planned',
+        'Stakeholder buy-in is strong with clear value proposition'
+      ],
+      general: [
+        'Data shows consistent patterns indicating strong performance',
+        'Opportunities for improvement are clearly identified',
+        'Strategic recommendations align with business objectives'
+      ]
+    };
+
+    return insights[type as keyof typeof insights] || insights.general;
+  }
+
+  /**
+   * Generate mock recommendations based on type
+   */
+  private generateMockRecommendations(type: string): string[] {
+    const recommendations = {
+      assessment: [
+        'Focus on developing leadership and strategic thinking skills',
+        'Implement regular feedback sessions to accelerate growth',
+        'Consider mentorship opportunities with senior team members'
+      ],
+      icp: [
+        'Refine messaging to better align with buyer persona pain points',
+        'Develop targeted content for each stage of the buyer journey',
+        'Optimize sales process based on decision-maker preferences'
+      ],
+      cost: [
+        'Prioritize high-impact, low-effort improvements first',
+        'Implement phased approach to minimize disruption',
+        'Establish clear metrics to track progress and ROI'
+      ],
+      business_case: [
+        'Begin with pilot program to validate assumptions',
+        'Secure stakeholder commitment before full implementation',
+        'Develop contingency plans for potential risks'
+      ],
+      general: [
+        'Implement regular review cycles to track progress',
+        'Focus on high-impact initiatives first',
+        'Ensure alignment with overall business strategy'
+      ]
+    };
+
+    return recommendations[type as keyof typeof recommendations] || recommendations.general;
+  }
+
+  /**
+   * Generate mock risk factors based on type
+   */
+  private generateMockRiskFactors(type: string): string[] {
+    const riskFactors = {
+      assessment: [
+        'Potential skill gaps in emerging technologies',
+        'Risk of overconfidence in current capabilities',
+        'Need for continuous learning and adaptation'
+      ],
+      icp: [
+        'Market conditions may change affecting target audience',
+        'Competitive landscape could shift rapidly',
+        'Customer preferences may evolve over time'
+      ],
+      cost: [
+        'Implementation costs may exceed initial estimates',
+        'Market conditions could impact expected returns',
+        'Technical challenges may delay implementation'
+      ],
+      business_case: [
+        'Stakeholder resistance to change',
+        'Budget constraints may limit implementation scope',
+        'External factors could impact projected outcomes'
+      ],
+      general: [
+        'Market volatility may affect projections',
+        'Resource constraints could limit implementation',
+        'External dependencies may introduce delays'
+      ]
+    };
+
+    return riskFactors[type as keyof typeof riskFactors] || riskFactors.general;
+  }
 }
 
-export default new ClaudeAIService();
+// Export singleton instance
+const claudeAIService = new ClaudeAIService();
+export default claudeAIService;

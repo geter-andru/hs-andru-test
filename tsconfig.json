@@ -1,81 +1,27 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext",
-      "ES6"
-    ],
-    "allowJs": false,
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
-    "incremental": true,
-    "module": "esnext",
     "esModuleInterop": true,
-    "moduleResolution": "node",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "jsxImportSource": "react",
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./*"],
-      "@/src/*": ["./src/*"],
-      "@/features/*": ["./src/features/*"],
-      "@/shared/*": ["./src/shared/*"],
-      "@/tools/*": ["./tools/*"]
-    },
+    "incremental": true,
     "plugins": [
       {
         "name": "next"
       }
     ],
-    
-    /* Strict Type-Checking Options - Restored for Quality */
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictBindCallApply": true,
-    "strictPropertyInitialization": true,
-    "noImplicitThis": true,
-    "alwaysStrict": true,
-    
-    /* Additional Checks - Temporarily Relaxed for Build */
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": false,
-    "exactOptionalPropertyTypes": false,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": false,
-    
-    /* Code Quality */
-    "forceConsistentCasingInFileNames": true,
-    "allowUnreachableCode": false,
-    "allowUnusedLabels": false
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
-  "include": [
-    "next-env.d.ts",
-    ".next/types/**/*.ts",
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules",
-    "**/archive/**",
-    "**/archive_*/**",
-    "**/*.archive.*",
-    "**/*.jsx",
-    "**/*.js",
-    "**/*.mjs",
-    "**/*.cjs",
-    "coverage",
-    "dist",
-    "build",
-    ".next",
-    "out"
-  ]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }

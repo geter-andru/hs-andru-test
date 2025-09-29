@@ -112,9 +112,11 @@ class AuthService {
       const isValid = await bcrypt.compare(providedToken, customer.accessToken);
       
       if (isValid) {
-        // Skip timestamp update since "Token Last Used" field doesn't exist in Airtable
-        // TODO: Add proper timestamp tracking field to Airtable if needed
-        
+        // Update last used timestamp
+        await airtableService.updateCustomer(customerId, {
+          'Token Last Used': new Date().toISOString()
+        });
+
         logger.info(`Valid access token used for customer ${customerId}`);
         return { 
           valid: true, 

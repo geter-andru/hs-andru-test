@@ -1,29 +1,15 @@
-# H&S Platform - Next.js Frontend
+# H&S Revenue Intelligence Platform
 
-## ⚠️ MANDATORY DEVELOPMENT PATTERNS ⚠️
-**ALL DEVELOPERS MUST FOLLOW THE PATTERNS IN [MANDATORY_PATTERNS.md](./MANDATORY_PATTERNS.md)**
-
-Violations will:
-- ❌ Block commits
-- ❌ Block builds  
-- ❌ Block deployments
-- ❌ Be tracked and reported
+AI-powered revenue optimization and business intelligence platform for technical founders and revenue teams.
 
 ## Overview
-Enterprise-grade Next.js 15 + TypeScript implementation of the H&S Revenue Intelligence Platform. This is the production-ready frontend designed for scalability and performance.
 
-## 🎯 Status: Next.js Production Platform
-- **Framework**: Next.js 15 with App Router
-- **Language**: TypeScript for type safety (NO JavaScript allowed)
-- **Deployment Target**: Production environment
-- **Code Quality**: Enforced via automated guardrails
-
-## Key Features
-- **Enterprise Dashboard**: Advanced analytics and business intelligence
-- **TypeScript Safety**: Full type coverage for robust development
-- **Server-Side Rendering**: Optimized performance and SEO
-- **Component Architecture**: Scalable component system
-- **API Integration**: RESTful API client with React Query
+The H&S Platform is a comprehensive revenue intelligence solution that combines:
+- **ICP Analysis**: AI-powered ideal customer profiling and segmentation
+- **Cost Calculator**: Financial impact analysis of delayed decision-making
+- **Business Case Builder**: Automated proposal and ROI documentation
+- **Progress Tracking**: Real-time milestone and achievement monitoring
+- **Export Capabilities**: Professional reports and presentations
 
 ## Tech Stack
 
@@ -56,11 +42,6 @@ Enterprise-grade Next.js 15 + TypeScript implementation of the H&S Revenue Intel
    ```bash
    git clone https://github.com/geter-andru/hs-andru-v1.git
    cd hs-andru-v1
-   ```
-
-2. **MANDATORY: Read the patterns guide**
-   ```bash
-   cat MANDATORY_PATTERNS.md  # READ THIS FIRST!
    ```
 
 2. **Install frontend dependencies**
@@ -167,6 +148,58 @@ Enterprise-grade Next.js 15 + TypeScript implementation of the H&S Revenue Intel
 - `POST /api/export/cost-calculator` - Export calculations
 - `POST /api/export/comprehensive` - Export full report
 
+## Validation System
+
+The platform includes a comprehensive validation pipeline to ensure code quality, security, and compatibility.
+
+### Validation Pipeline
+
+Run the complete validation suite:
+```bash
+npm run validate
+```
+
+### Validation Components
+
+#### 🔒 Security Validation
+- **Secret Detection**: Scans for exposed API keys and sensitive data
+- **Next.js Security**: Validates security best practices
+- **Environment Variables**: Ensures proper configuration
+
+#### 🔧 Compatibility Validation
+- **Next.js 15**: Framework compatibility checks
+- **React 19**: Component structure validation
+- **TypeScript**: Type safety verification
+- **App Router**: Routing structure validation
+
+#### 🌐 Deployment Validation
+- **Netlify**: Deployment configuration checks
+- **Environment**: Production environment validation
+- **Build Artifacts**: Build output verification
+
+#### 🌪️ Chaos Testing
+- **Load Testing**: 75 concurrent user simulation
+- **Memory Leaks**: Resource usage monitoring
+- **Error Handling**: Stress testing and graceful degradation
+- **Performance**: Response time and throughput analysis
+
+### Validation Agents
+
+The system includes specialized validation agents:
+
+- **Security Scanner** (`lib/validation/agents/security/`)
+- **Build Validator** (`lib/validation/agents/build/`)
+- **Compatibility Checker** (`lib/validation/agents/compatibility/`)
+- **Netlify Deployer** (`lib/validation/agents/netlify/`)
+
+### Validation Context
+
+The platform maintains a validation context file (`H_S_VALIDATION_CONTEXT.json`) that tracks:
+- Current validation status
+- Feature implementation state
+- Integration points
+- Deployment readiness
+
 ## Deployment
 
 ### Production Build
@@ -178,6 +211,17 @@ npm start
 # Backend
 npm run build (if applicable)
 npm start
+```
+
+### Pre-Deployment Validation
+```bash
+# Run full validation before deployment
+npm run validate
+
+# Check specific components
+npm run validate:security
+npm run validate:compatibility
+npm run validate:netlify
 ```
 
 ### Environment Variables

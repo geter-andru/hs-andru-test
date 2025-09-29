@@ -5,8 +5,8 @@ import costCalculatorController from '../controllers/costCalculatorController.js
 import businessCaseController from '../controllers/businessCaseController.js';
 import exportController from '../controllers/exportController.js';
 import authRoutes from './auth.js';
+import webhookRoutes from './webhooks.js';
 import progressRoutes from './progress.js';
-import companyResearchRoutes from './companyResearchRoutes.js';
 import { validate, paramSchemas, costCalculationSchema, businessCaseSchema } from '../middleware/validation.js';
 import { strictRateLimiter } from '../middleware/security.js';
 import { authenticateMulti, requireCustomerContext, customerRateLimit } from '../middleware/auth.js';
@@ -20,12 +20,11 @@ router.get('/health/detailed', healthController.checkHealthDetailed);
 // Authentication routes (public)
 router.use('/api/auth', authRoutes);
 
+// Webhook routes (mixed auth)
+router.use('/api/webhooks', webhookRoutes);
 
 // Progress tracking routes (requires auth)
 router.use('/api/progress', progressRoutes);
-
-// Company research routes (requires auth)
-router.use('/api/company', companyResearchRoutes);
 
 // Customer routes (requires authentication)
 router.get('/api/customer/:customerId', 
@@ -234,6 +233,13 @@ router.get('/api/docs', (req, res) => {
           'GET /api/export/status/:exportId': 'Get export status',
           'DELETE /api/export/:exportId': 'Delete export',
           'GET /api/export/history/:customerId': 'Get export history'
+        },
+        webhooks: {
+          'POST /api/webhooks/incoming': 'Handle incoming webhook from Make.com',
+          'POST /api/webhooks/trigger': 'Trigger automation workflow',
+          'GET /api/webhooks/test/:webhookType': 'Test webhook connectivity',
+          'GET /api/webhooks/status': 'Get automation status',
+          'GET /api/webhooks/health': 'Webhook service health check'
         },
         auth: {
           'POST /api/auth/token': 'Generate JWT token',

@@ -1,50 +1,78 @@
-'use client';
-
-import React, { useEffect, useState, ReactNode } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
 /**
  * ModernCircularProgress - Professional circular progress component
  * 
  * Features:
- * - 120px diameter with large percentage displays
- * - Smooth animations with spring physics
- * - Professional color schemes
+ * - Professional circular progress with smooth animations
+ * - Multiple size variants (sm, md, lg, xl)
+ * - Color schemes matching the design system
  * - Customizable stroke width and colors
  * - Center content support for additional metrics
+ * - TypeScript-first implementation
  */
 
 interface ModernCircularProgressProps {
-  percentage?: number;
-  size?: number;
+  value: number;
+  max?: number;
+  size?: 'sm' | 'md' | 'lg' | 'xl' | number;
   strokeWidth?: number;
-  color?: 'purple' | 'blue' | 'green' | 'orange' | 'red';
+  color?: 'purple' | 'blue' | 'green' | 'orange' | 'red' | 'brand-primary' | 'brand-secondary' | 'accent-success' | 'accent-warning' | 'accent-danger';
   backgroundColor?: string;
   showPercentage?: boolean;
-  centerContent?: ReactNode;
+  centerContent?: React.ReactNode;
   label?: string;
   animated?: boolean;
   className?: string;
 }
 
+interface ModernProgressGroupProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+interface ModernMiniProgressProps {
+  value: number;
+  max?: number;
+  color?: 'purple' | 'blue' | 'green' | 'orange' | 'red' | 'brand-primary' | 'brand-secondary' | 'accent-success' | 'accent-warning' | 'accent-danger';
+  label?: string;
+  size?: 'sm' | 'md' | 'lg' | number;
+  className?: string;
+}
+
 const ModernCircularProgress: React.FC<ModernCircularProgressProps> = ({
-  percentage = 0,
-  size = 120,
-  strokeWidth = 8,
-  color = 'purple',
-  backgroundColor = '#374151',
+  value = 0,
+  max = 100,
+  size = 'lg',
+  strokeWidth,
+  color = 'brand-primary',
+  backgroundColor = 'var(--color-surface)',
   showPercentage = true,
   centerContent,
   label,
   animated = true,
   className = ''
 }) => {
-  const [displayPercentage, setDisplayPercentage] = useState(0);
-  const radius = (size - strokeWidth) / 2;
+  const [displayValue, setDisplayValue] = useState(0);
+  
+  // Size configurations
+  const sizeConfig = {
+    sm: { size: 60, strokeWidth: 4 },
+    md: { size: 80, strokeWidth: 6 },
+    lg: { size: 120, strokeWidth: 8 },
+    xl: { size: 160, strokeWidth: 10 }
+  };
+  
+  const actualSize = typeof size === 'number' ? size : sizeConfig[size].size;
+  const actualStrokeWidth = strokeWidth || (typeof size === 'number' ? 8 : sizeConfig[size].strokeWidth);
+  
+  const radius = (actualSize - actualStrokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
-  const offset = circumference - (displayPercentage / 100) * circumference;
+  const percentage = Math.max(0, Math.min(100, (value / max) * 100));
+  const offset = circumference - (percentage / 100) * circumference;
 
-  // Color schemes for different states
+  // Color schemes matching the design system
   const colorSchemes = {
     purple: {
       primary: '#8B5CF6',
@@ -70,22 +98,47 @@ const ModernCircularProgress: React.FC<ModernCircularProgressProps> = ({
       primary: '#EF4444',
       gradient: 'url(#redGradient)',
       glow: '#EF4444'
+    },
+    'brand-primary': {
+      primary: 'var(--color-brand-primary)',
+      gradient: 'url(#brandPrimaryGradient)',
+      glow: 'var(--color-brand-primary)'
+    },
+    'brand-secondary': {
+      primary: 'var(--color-brand-secondary)',
+      gradient: 'url(#brandSecondaryGradient)',
+      glow: 'var(--color-brand-secondary)'
+    },
+    'accent-success': {
+      primary: 'var(--color-accent-success)',
+      gradient: 'url(#accentSuccessGradient)',
+      glow: 'var(--color-accent-success)'
+    },
+    'accent-warning': {
+      primary: 'var(--color-accent-warning)',
+      gradient: 'url(#accentWarningGradient)',
+      glow: 'var(--color-accent-warning)'
+    },
+    'accent-danger': {
+      primary: 'var(--color-accent-danger)',
+      gradient: 'url(#accentDangerGradient)',
+      glow: 'var(--color-accent-danger)'
     }
   };
 
-  const currentColor = colorSchemes[color] || colorSchemes.purple;
+  const currentColor = colorSchemes[color] || colorSchemes['brand-primary'];
 
-  // Animate percentage counter
+  // Animate value counter
   useEffect(() => {
     if (!animated) {
-      setDisplayPercentage(percentage);
+      setDisplayValue(value);
       return;
     }
 
     const duration = 1500; // 1.5 seconds
     const startTime = Date.now();
-    const startPercentage = displayPercentage;
-    const targetPercentage = Math.max(0, Math.min(100, percentage));
+    const startValue = displayValue;
+    const targetValue = Math.max(0, Math.min(max, value));
 
     const animateCounter = () => {
       const elapsed = Date.now() - startTime;
@@ -93,9 +146,9 @@ const ModernCircularProgress: React.FC<ModernCircularProgressProps> = ({
       
       // Easing function for smooth animation
       const easeOut = 1 - Math.pow(1 - progress, 3);
-      const currentValue = startPercentage + (targetPercentage - startPercentage) * easeOut;
+      const currentValue = startValue + (targetValue - startValue) * easeOut;
       
-      setDisplayPercentage(Math.round(currentValue));
+      setDisplayValue(Math.round(currentValue * 10) / 10); // Round to 1 decimal
       
       if (progress < 1) {
         requestAnimationFrame(animateCounter);
@@ -103,13 +156,20 @@ const ModernCircularProgress: React.FC<ModernCircularProgressProps> = ({
     };
 
     requestAnimationFrame(animateCounter);
-  }, [percentage, animated, displayPercentage]);
+  }, [value, max, animated, displayValue]);
 
   return (
-    <div className={`relative inline-flex items-center justify-center touch-manipulation ${className}`}>
+    <div 
+      className={`relative inline-flex items-center justify-center touch-manipulation ${className}`}
+      role="progressbar"
+      aria-valuenow={percentage || 0}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-label={label || `Progress: ${percentage || 0}%`}
+    >
       <svg
-        width={size}
-        height={size}
+        width={actualSize}
+        height={actualSize}
         className="transform -rotate-90"
         style={{
           filter: `drop-shadow(0 0 8px ${currentColor.glow}30)`
@@ -137,26 +197,46 @@ const ModernCircularProgress: React.FC<ModernCircularProgressProps> = ({
             <stop offset="0%" stopColor="#F87171" />
             <stop offset="100%" stopColor="#EF4444" />
           </linearGradient>
+          <linearGradient id="brandPrimaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="var(--color-brand-primary)" />
+            <stop offset="100%" stopColor="var(--color-brand-primary)" />
+          </linearGradient>
+          <linearGradient id="brandSecondaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="var(--color-brand-secondary)" />
+            <stop offset="100%" stopColor="var(--color-brand-secondary)" />
+          </linearGradient>
+          <linearGradient id="accentSuccessGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="var(--color-accent-success)" />
+            <stop offset="100%" stopColor="var(--color-accent-success)" />
+          </linearGradient>
+          <linearGradient id="accentWarningGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="var(--color-accent-warning)" />
+            <stop offset="100%" stopColor="var(--color-accent-warning)" />
+          </linearGradient>
+          <linearGradient id="accentDangerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="var(--color-accent-danger)" />
+            <stop offset="100%" stopColor="var(--color-accent-danger)" />
+          </linearGradient>
         </defs>
 
         {/* Background Circle */}
         <circle
-          cx={size / 2}
-          cy={size / 2}
+          cx={actualSize / 2}
+          cy={actualSize / 2}
           r={radius}
           stroke={backgroundColor}
-          strokeWidth={strokeWidth}
+          strokeWidth={actualStrokeWidth}
           fill="transparent"
           className="opacity-20"
         />
 
         {/* Progress Circle */}
         <motion.circle
-          cx={size / 2}
-          cy={size / 2}
+          cx={actualSize / 2}
+          cy={actualSize / 2}
           r={radius}
           stroke={currentColor.gradient}
-          strokeWidth={strokeWidth}
+          strokeWidth={actualStrokeWidth}
           fill="transparent"
           strokeLinecap="round"
           strokeDasharray={circumference}
@@ -182,10 +262,10 @@ const ModernCircularProgress: React.FC<ModernCircularProgressProps> = ({
             transition={{ delay: 0.5, duration: 0.5 }}
             className="flex items-baseline"
           >
-            <span className="text-xl sm:text-2xl font-bold text-white">
-              {displayPercentage}
+            <span className="text-xl sm:text-2xl font-bold text-text-primary">
+              {Math.round((displayValue / max) * 100)}
             </span>
-            <span className="text-base sm:text-lg text-gray-400 ml-1">%</span>
+            <span className="text-base sm:text-lg text-text-muted ml-1">%</span>
           </motion.div>
         )}
         
@@ -205,7 +285,7 @@ const ModernCircularProgress: React.FC<ModernCircularProgressProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1, duration: 0.5 }}
-            className="mt-2 text-xs text-gray-400 font-medium max-w-[80px] leading-tight"
+            className="mt-2 text-xs text-text-muted font-medium max-w-[80px] leading-tight"
           >
             {label}
           </motion.div>
@@ -218,12 +298,10 @@ const ModernCircularProgress: React.FC<ModernCircularProgressProps> = ({
 /**
  * ModernProgressGroup - Group multiple progress circles
  */
-interface ModernProgressGroupProps {
-  children: ReactNode;
-  className?: string;
-}
-
-const ModernProgressGroup: React.FC<ModernProgressGroupProps> = ({ children, className = '' }) => {
+const ModernProgressGroup: React.FC<ModernProgressGroupProps> = ({ 
+  children, 
+  className = '' 
+}) => {
   return (
     <div className={`flex items-center justify-center gap-8 ${className}`}>
       {children}
@@ -234,24 +312,18 @@ const ModernProgressGroup: React.FC<ModernProgressGroupProps> = ({ children, cla
 /**
  * ModernMiniProgress - Smaller version for compact displays
  */
-interface ModernMiniProgressProps {
-  percentage?: number;
-  color?: 'purple' | 'blue' | 'green' | 'orange' | 'red';
-  label?: string;
-  size?: number;
-  className?: string;
-}
-
 const ModernMiniProgress: React.FC<ModernMiniProgressProps> = ({
-  percentage = 0,
-  color = 'purple',
+  value = 0,
+  max = 100,
+  color = 'brand-primary',
   label,
-  size = 60,
+  size = 'md',
   className = ''
 }) => {
   return (
     <ModernCircularProgress
-      percentage={percentage}
+      value={value}
+      max={max}
       size={size}
       strokeWidth={4}
       color={color}

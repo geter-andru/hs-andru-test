@@ -2,65 +2,51 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { auth } from '@/lib/api/client';
-import DashboardLayout from '@/src/shared/components/layout/DashboardLayout';
-import { RevenueIntelligenceDashboard } from '@/src/features/dashboard';
+import { useSupabaseAuth } from '@/src/shared/hooks/useSupabaseAuth';
+import { EnterpriseNavigationV2 } from '@/src/shared/components/layout/EnterpriseNavigationV2';
+import { AdvancedAnalyticsDashboard } from '@/src/shared/components/analytics/AdvancedAnalyticsDashboard';
 
 export default function AnalyticsPage() {
   const router = useRouter();
-  const [customerId, setCustomerId] = useState<string | undefined>();
+  const { user, loading: authLoading } = useSupabaseAuth();
 
   useEffect(() => {
-    const id = auth.getCustomerId();
-    if (!id || !auth.isAuthenticated()) {
+    if (authLoading) return; // Wait for auth to load
+    
+    if (!user) {
       router.push('/login');
-    } else {
-      setCustomerId(id);
+      return;
     }
-  }, [router]);
+  }, [user, authLoading, router]);
 
-  if (!customerId) {
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-gray-400">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
     return null;
   }
 
   return (
-    <DashboardLayout>
+    <EnterpriseNavigationV2>
       <div className="space-y-6">
         {/* Header with AI Gradient */}
         <div className="mb-8">
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 rounded-2xl opacity-10"></div>
-            <div className="relative p-6 rounded-2xl border border-slate-700">
-              <div className="flex items-center space-x-3">
-                <div className="w-3 h-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-pulse"></div>
-                <h1 className="text-3xl font-bold text-white">
-                  Advanced Analytics
-                </h1>
-              </div>
-              <p className="text-white mt-2">
-                AI-powered insights and predictive analytics
-              </p>
-              <div className="mt-4 flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
-                  <span className="text-xs text-white">Live Analysis</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-                  <span className="text-xs text-white">AI Processing</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                  <span className="text-xs text-white">Real-time Data</span>
-                </div>
-              </div>
-            </div>
+          <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
+            <h1 className="text-4xl font-bold mb-2">Advanced Analytics</h1>
+            <p className="text-lg text-gray-600 dark:text-gray-300">
+              AI-powered insights and predictive analytics for your business
+            </p>
           </div>
         </div>
 
-        {/* Advanced Analytics Dashboard */}
-        <RevenueIntelligenceDashboard customerId={customerId} />
+        {/* Analytics Dashboard */}
+        <AdvancedAnalyticsDashboard customerId={user.id} />
       </div>
-    </DashboardLayout>
+    </EnterpriseNavigationV2>
   );
 }

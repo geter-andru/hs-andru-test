@@ -1,364 +1,260 @@
-'use client';
-
-import React, { forwardRef } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { Loader2 } from 'lucide-react';
 
 /**
- * Button - Advanced button component system
+ * Button - Professional button component library
  * 
  * Features:
- * - Multiple variants (primary, secondary, outline, ghost, link, danger)
- * - Different sizes (xs, sm, md, lg, xl)
- * - Loading states with spinners
- * - Icon support (left and right)
+ * - Multiple variants (primary, secondary, outline, ghost, link)
+ * - Multiple sizes (sm, md, lg, xl)
+ * - Loading states with spinner
  * - Disabled states
- * - Full width option
- * - Custom color themes
- * - Accessibility compliant
- * - Animation effects
- * - Button groups
+ * - Icon support
+ * - Accessibility features
+ * - TypeScript-first implementation
+ * - Design system integration
  */
 
-export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'danger' | 'success' | 'warning';
-export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-  isLoading?: boolean;
+interface BaseButtonProps {
+  children: React.ReactNode;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  disabled?: boolean;
+  loading?: boolean;
   loadingText?: string;
+  className?: string;
+  type?: 'button' | 'submit' | 'reset';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'danger' | 'success' | 'warning';
+  icon?: React.ReactNode;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
+  iconPosition?: 'left' | 'right';
   fullWidth?: boolean;
-  rounded?: boolean;
-  animate?: boolean;
-  children: React.ReactNode;
+  'aria-label'?: string;
+  'aria-busy'?: boolean;
 }
 
-const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
-  variant = 'primary',
-  size = 'md',
-  isLoading = false,
-  loadingText,
-  leftIcon,
-  rightIcon,
-  fullWidth = false,
-  rounded = false,
-  animate = true,
-  disabled,
-  className = '',
-  children,
-  ...props
-}, ref) => {
-  
-  // Base button styles
-  const baseStyles = `
-    inline-flex items-center justify-center gap-2 font-medium transition-all duration-200
-    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900
-    disabled:cursor-not-allowed disabled:opacity-50
-    ${fullWidth ? 'w-full' : ''}
-    ${rounded ? 'rounded-full' : 'rounded-lg'}
-  `;
+interface LoadingSpinnerProps {
+  size?: 'sm' | 'md' | 'lg';
+}
 
-  // Size configurations
-  const sizeStyles = {
-    xs: 'px-2.5 py-1.5 text-xs',
-    sm: 'px-3 py-2 text-sm',
-    md: 'px-4 py-2.5 text-sm',
-    lg: 'px-5 py-3 text-base',
-    xl: 'px-6 py-3.5 text-lg'
+const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ size = 'md' }) => {
+  const sizeClasses = {
+    sm: 'h-4 w-4',
+    md: 'h-5 w-5',
+    lg: 'h-6 w-6'
   };
 
-  // Variant configurations
-  const variantStyles = {
+  return (
+    <div className={`animate-spin rounded-full border-2 border-current border-t-transparent ${sizeClasses[size]}`} />
+  );
+};
+
+const Button: React.FC<BaseButtonProps> = ({
+  children,
+  onClick,
+  disabled = false,
+  loading = false,
+  loadingText,
+  className = '',
+  type = 'button',
+  size = 'md',
+  variant = 'primary',
+  icon,
+  leftIcon,
+  rightIcon,
+  iconPosition = 'left',
+  fullWidth = false,
+  'aria-label': ariaLabel,
+  'aria-busy': ariaBusy,
+  ...props
+}) => {
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (disabled || loading) {
+      e.preventDefault();
+      return;
+    }
+    
+    try {
+      if (onClick) {
+        onClick(e);
+      }
+    } catch (error) {
+      console.error('Button click error:', error);
+    }
+  };
+
+  // Size configurations
+  const sizeClasses = {
+    sm: 'px-3 py-1.5 text-sm',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg',
+    xl: 'px-8 py-4 text-xl'
+  };
+
+  // Variant configurations using standard Tailwind classes
+  const variantClasses = {
     primary: `
-      bg-blue-500 text-white border border-blue-500
-      hover:bg-blue-600 hover:border-blue-600
-      focus:ring-blue-500/50
-      active:bg-blue-700
+      bg-purple-600 hover:bg-purple-700 active:bg-purple-800
+      text-white border-purple-600
+      disabled:bg-gray-200 disabled:text-gray-500 disabled:border-gray-200
     `,
     secondary: `
-      bg-gray-700 text-white border border-gray-700
-      hover:bg-gray-600 hover:border-gray-600
-      focus:ring-gray-500/50
-      active:bg-gray-800
+      bg-gray-200 hover:bg-gray-300 active:bg-gray-400
+      text-gray-900 border-gray-200
+      disabled:bg-gray-200 disabled:text-gray-500 disabled:border-gray-200
     `,
     outline: `
-      bg-transparent text-gray-300 border border-gray-600
-      hover:bg-gray-800 hover:text-white hover:border-gray-500
-      focus:ring-gray-500/50
-      active:bg-gray-700
+      bg-transparent hover:bg-purple-50 active:bg-purple-100
+      text-purple-600 border border-gray-300
+      disabled:bg-transparent disabled:text-gray-500 disabled:border-gray-200
     `,
     ghost: `
-      bg-transparent text-gray-300 border border-transparent
-      hover:bg-gray-800 hover:text-white
-      focus:ring-gray-500/50
-      active:bg-gray-700
+      bg-transparent hover:bg-gray-100 active:bg-gray-200
+      text-gray-700 border-transparent
+      disabled:bg-transparent disabled:text-gray-500 disabled:border-transparent
     `,
     link: `
-      bg-transparent text-blue-400 border border-transparent
-      hover:text-blue-300 hover:underline
-      focus:ring-blue-500/50
-      active:text-blue-500
-      p-0 h-auto font-normal
+      bg-transparent hover:bg-transparent active:bg-transparent
+      text-purple-600 hover:text-purple-700 underline
+      border-transparent disabled:text-gray-500
     `,
     danger: `
-      bg-red-500 text-white border border-red-500
-      hover:bg-red-600 hover:border-red-600
-      focus:ring-red-500/50
-      active:bg-red-700
+      bg-red-600 hover:bg-red-700 active:bg-red-800
+      text-white border-red-600
+      disabled:bg-gray-200 disabled:text-gray-500 disabled:border-gray-200
     `,
     success: `
-      bg-green-500 text-white border border-green-500
-      hover:bg-green-600 hover:border-green-600
-      focus:ring-green-500/50
-      active:bg-green-700
+      bg-green-600 hover:bg-green-700 active:bg-green-800
+      text-white border-green-600
+      disabled:bg-gray-200 disabled:text-gray-500 disabled:border-gray-200
     `,
     warning: `
-      bg-yellow-500 text-white border border-yellow-500
-      hover:bg-yellow-600 hover:border-yellow-600
-      focus:ring-yellow-500/50
-      active:bg-yellow-700
+      bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-800
+      text-white border-yellow-600
+      disabled:bg-gray-200 disabled:text-gray-500 disabled:border-gray-200
     `
   };
 
-  // Loading spinner size based on button size
-  const spinnerSizes = {
-    xs: 'w-3 h-3',
-    sm: 'w-4 h-4',
-    md: 'w-4 h-4',
-    lg: 'w-5 h-5',
-    xl: 'w-5 h-5'
-  };
-
-  const combinedClassName = `
-    ${baseStyles}
-    ${sizeStyles[size]}
-    ${variantStyles[variant]}
+  const baseClasses = `
+    relative inline-flex items-center justify-center
+    font-medium rounded-lg border transition-all duration-200
+    focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:ring-offset-2
+    touch-manipulation select-none
+    ${sizeClasses[size]}
+    ${variantClasses[variant]}
+    ${fullWidth ? 'w-full' : ''}
+    ${disabled || loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
     ${className}
-  `;
+  `.trim();
 
+  const hasContent = children || leftIcon || rightIcon || icon || loading;
+  
   const content = (
     <>
-      {isLoading ? (
-        <Loader2 className={`${spinnerSizes[size]} animate-spin`} />
-      ) : leftIcon ? (
-        <span className="flex-shrink-0">{leftIcon}</span>
-      ) : null}
+      {loading && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <LoadingSpinner size={size === 'sm' ? 'sm' : size === 'lg' || size === 'xl' ? 'lg' : 'md'} />
+        </div>
+      )}
       
-      <span className={isLoading ? 'opacity-70' : ''}>
-        {isLoading && loadingText ? loadingText : children}
-      </span>
-      
-      {!isLoading && rightIcon && (
-        <span className="flex-shrink-0">{rightIcon}</span>
+      {hasContent && (
+        <div className={`flex items-center justify-center space-x-2 ${loading ? 'opacity-0' : 'opacity-100'}`}>
+          {!loading && (leftIcon || (icon && iconPosition === 'left')) && (
+            <span className="flex-shrink-0">{leftIcon || icon}</span>
+          )}
+          
+          <span className="flex-1 text-center">
+            {loading ? (loadingText || 'Loading...') : children}
+          </span>
+          
+          {!loading && (rightIcon || (icon && iconPosition === 'right')) && (
+            <span className="flex-shrink-0">{rightIcon || icon}</span>
+          )}
+        </div>
       )}
     </>
   );
 
-  if (animate && !disabled && !isLoading) {
-    return (
-      <motion.button
-        ref={ref}
-        className={combinedClassName}
-        disabled={disabled || isLoading}
-        whileTap={{ scale: 0.98 }}
-        whileHover={{ scale: 1.02 }}
-        transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-        {...props}
-      >
-        {content}
-      </motion.button>
-    );
-  }
-
   return (
-    <button
-      ref={ref}
-      className={combinedClassName}
-      disabled={disabled || isLoading}
+    <motion.button
+      type={type}
+      onClick={handleClick}
+      disabled={disabled || loading}
+      className={baseClasses}
+      aria-label={ariaLabel}
+      aria-busy={ariaBusy || loading}
+      aria-disabled={disabled || loading}
+      tabIndex={disabled || loading ? -1 : 0}
+      whileHover={!disabled && !loading ? { scale: 1.02 } : {}}
+      whileTap={!disabled && !loading ? { scale: 0.98 } : {}}
+      transition={{ duration: 0.1 }}
       {...props}
     >
       {content}
-    </button>
+    </motion.button>
   );
-});
+};
 
-Button.displayName = 'Button';
+// Convenience exports for common button types
+export const PrimaryButton: React.FC<Omit<BaseButtonProps, 'variant'>> = (props) => (
+  <Button {...props} variant="primary" />
+);
 
-// Icon Button Component
-export interface IconButtonProps extends Omit<ButtonProps, 'children' | 'leftIcon' | 'rightIcon'> {
+export const SecondaryButton: React.FC<Omit<BaseButtonProps, 'variant'>> = (props) => (
+  <Button {...props} variant="secondary" />
+);
+
+export const OutlineButton: React.FC<Omit<BaseButtonProps, 'variant'>> = (props) => (
+  <Button {...props} variant="outline" />
+);
+
+export const GhostButton: React.FC<Omit<BaseButtonProps, 'variant'>> = (props) => (
+  <Button {...props} variant="ghost" />
+);
+
+export const LinkButton: React.FC<Omit<BaseButtonProps, 'variant'>> = (props) => (
+  <Button {...props} variant="link" />
+);
+
+export const DangerButton: React.FC<Omit<BaseButtonProps, 'variant'>> = (props) => (
+  <Button {...props} variant="danger" />
+);
+
+export const SuccessButton: React.FC<Omit<BaseButtonProps, 'variant'>> = (props) => (
+  <Button {...props} variant="success" />
+);
+
+export const WarningButton: React.FC<Omit<BaseButtonProps, 'variant'>> = (props) => (
+  <Button {...props} variant="warning" />
+);
+
+// Icon Button component
+interface IconButtonProps extends Omit<BaseButtonProps, 'children' | 'icon' | 'iconPosition'> {
   icon: React.ReactNode;
   'aria-label': string;
 }
 
-export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(({
+export const IconButton: React.FC<IconButtonProps> = ({
   icon,
   size = 'md',
   variant = 'ghost',
-  rounded = true,
   className = '',
   ...props
-}, ref) => {
-  // Icon button specific sizing (square buttons)
-  const iconSizeStyles = {
-    xs: 'w-6 h-6',
-    sm: 'w-8 h-8',
-    md: 'w-10 h-10',
-    lg: 'w-12 h-12',
-    xl: 'w-14 h-14'
+}) => {
+  const iconSizeClasses = {
+    sm: 'p-2 min-h-[36px] min-w-[36px]',
+    md: 'p-3 min-h-[44px] min-w-[44px]',
+    lg: 'p-4 min-h-[48px] min-w-[48px]',
+    xl: 'p-5 min-h-[56px] min-w-[56px]'
   };
 
   return (
     <Button
-      ref={ref}
-      variant={variant}
+      {...props}
       size={size}
-      rounded={rounded}
-      className={`${iconSizeStyles[size]} p-0 ${className}`}
-      {...props}
-    >
-      {icon}
-    </Button>
-  );
-});
-
-IconButton.displayName = 'IconButton';
-
-// Button Group Component
-export interface ButtonGroupProps {
-  children: React.ReactNode;
-  orientation?: 'horizontal' | 'vertical';
-  size?: ButtonSize;
-  variant?: ButtonVariant;
-  fullWidth?: boolean;
-  className?: string;
-}
-
-export const ButtonGroup: React.FC<ButtonGroupProps> = ({
-  children,
-  orientation = 'horizontal',
-  size = 'md',
-  variant = 'secondary',
-  fullWidth = false,
-  className = ''
-}) => {
-  const baseStyles = `
-    inline-flex
-    ${orientation === 'vertical' ? 'flex-col' : 'flex-row'}
-    ${fullWidth ? 'w-full' : ''}
-  `;
-
-  return (
-    <div className={`${baseStyles} ${className}`} role="group">
-      {React.Children.map(children, (child, index) => {
-        if (React.isValidElement(child)) {
-          const isFirst = index === 0;
-          const isLast = index === React.Children.count(children) - 1;
-          
-          const groupClassName = orientation === 'horizontal'
-            ? `
-                ${!isFirst ? '-ml-px' : ''}
-                ${!isFirst && !isLast ? 'rounded-none' : ''}
-                ${isFirst && !isLast ? 'rounded-r-none' : ''}
-                ${isLast && !isFirst ? 'rounded-l-none' : ''}
-              `
-            : `
-                ${!isFirst ? '-mt-px' : ''}
-                ${!isFirst && !isLast ? 'rounded-none' : ''}
-                ${isFirst && !isLast ? 'rounded-b-none' : ''}
-                ${isLast && !isFirst ? 'rounded-t-none' : ''}
-              `;
-
-          return React.cloneElement(child, {
-            size: child.props.size || size,
-            variant: child.props.variant || variant,
-            fullWidth: fullWidth,
-            className: `${child.props.className || ''} ${groupClassName}`.trim()
-          });
-        }
-        return child;
-      })}
-    </div>
-  );
-};
-
-// Toggle Button Component
-export interface ToggleButtonProps extends Omit<ButtonProps, 'variant'> {
-  pressed?: boolean;
-  onPressedChange?: (pressed: boolean) => void;
-  pressedVariant?: ButtonVariant;
-  unpressedVariant?: ButtonVariant;
-}
-
-export const ToggleButton = forwardRef<HTMLButtonElement, ToggleButtonProps>(({
-  pressed = false,
-  onPressedChange,
-  pressedVariant = 'primary',
-  unpressedVariant = 'outline',
-  onClick,
-  children,
-  ...props
-}, ref) => {
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    onPressedChange?.(!pressed);
-    onClick?.(event);
-  };
-
-  return (
-    <Button
-      ref={ref}
-      variant={pressed ? pressedVariant : unpressedVariant}
-      onClick={handleClick}
-      aria-pressed={pressed}
-      {...props}
-    >
-      {children}
-    </Button>
-  );
-});
-
-ToggleButton.displayName = 'ToggleButton';
-
-// Floating Action Button Component
-export interface FloatingActionButtonProps extends Omit<ButtonProps, 'variant' | 'size'> {
-  size?: 'md' | 'lg';
-  position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
-  icon: React.ReactNode;
-}
-
-export const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
-  size = 'lg',
-  position = 'bottom-right',
-  icon,
-  className = '',
-  ...props
-}) => {
-  const positionStyles = {
-    'bottom-right': 'fixed bottom-6 right-6',
-    'bottom-left': 'fixed bottom-6 left-6',
-    'top-right': 'fixed top-6 right-6',
-    'top-left': 'fixed top-6 left-6'
-  };
-
-  const fabSizes = {
-    md: 'w-12 h-12',
-    lg: 'w-14 h-14'
-  };
-
-  return (
-    <Button
-      variant="primary"
-      rounded={true}
-      className={`
-        ${positionStyles[position]}
-        ${fabSizes[size]}
-        p-0 shadow-lg hover:shadow-xl z-50
-        ${className}
-      `}
-      animate={true}
-      {...props}
+      variant={variant}
+      className={`${iconSizeClasses[size]} ${className}`}
     >
       {icon}
     </Button>
@@ -366,3 +262,4 @@ export const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
 };
 
 export default Button;
+export { Button, LoadingSpinner };

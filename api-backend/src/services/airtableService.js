@@ -79,9 +79,6 @@ class AirtableService {
         usageCount: record.get('Usage Count'),
         lastAccessed: record.get('Last Accessed'),
         createdAt: record.get('Created At'),
-        accessToken: record.get('Access Token'), // Add missing access token field
-        tokenGeneratedAt: record.get('Token Generated At'),
-        tokenLastUsed: record.get('Token Last Used'),
       };
     } catch (error) {
       logger.error(`Error fetching customer ${customerId}:`, error);

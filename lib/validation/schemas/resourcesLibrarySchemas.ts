@@ -219,7 +219,7 @@ export const ResourceAccessTrackingSchema = z.object({
   last_accessed: z.string().datetime(),
   session_id: z.string().optional(),
   user_agent: z.string().optional(),
-  ip_address: z.string().ip().optional(),
+  ip_address: z.string().optional(),
   created_at: z.string().datetime()
 });
 
@@ -241,23 +241,8 @@ export const ResourceUnlockCriteriaSchema = z.object({
 export type ResourceUnlockCriteria = z.infer<typeof ResourceUnlockCriteriaSchema>;
 
 // ===========================================
-// TEMPLATE SCHEMA
+// TEMPLATE SCHEMA (Already defined above)
 // ===========================================
-
-export const ResourceTemplateSchema = z.object({
-  id: z.string().uuid(),
-  template_name: z.string().min(1).max(255),
-  template_type: TemplateTypeSchema,
-  tier: ResourceTierSchema,
-  category: ResourceCategorySchema,
-  template_content: z.record(z.any()),
-  variables: z.record(z.any()).default({}),
-  is_active: z.boolean().default(true),
-  created_at: z.string().datetime(),
-  updated_at: z.string().datetime()
-});
-
-export type ResourceTemplate = z.infer<typeof ResourceTemplateSchema>;
 
 // ===========================================
 // EXPORT SCHEMA
@@ -462,35 +447,4 @@ export const validateGenerationStatus = (status: string): status is GenerationSt
 // SCHEMA EXPORTS
 // ===========================================
 
-export {
-  // Core schemas
-  ResourceSchema,
-  ResourceDependencySchema,
-  ResourceGenerationLogSchema,
-  ResourceAccessTrackingSchema,
-  ResourceUnlockCriteriaSchema,
-  ResourceTemplateSchema,
-  ResourceExportSchema,
-  ResourceFeedbackSchema,
-  
-  // Context schemas
-  CumulativeIntelligenceContextSchema,
-  
-  // API schemas
-  GenerateResourceRequestSchema,
-  GenerateResourceResponseSchema,
-  GetResourcesRequestSchema,
-  GetResourcesResponseSchema,
-  CheckUnlockStatusRequestSchema,
-  CheckUnlockStatusResponseSchema,
-  ExportResourceRequestSchema,
-  ExportResourceResponseSchema,
-  TrackAccessRequestSchema,
-  SubmitFeedbackRequestSchema,
-  
-  // Validation helpers
-  validateResourceTier,
-  validateResourceCategory,
-  validateExportFormat,
-  validateGenerationStatus
-};
+// All schemas are exported individually above

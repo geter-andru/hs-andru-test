@@ -6,7 +6,7 @@
  */
 
 import { createClient } from '@/lib/supabase/server';
-import { claudeAIService } from './claudeAIService';
+import claudeAIService from './claudeAIService';
 import { 
   Resource, 
   ResourceTier, 

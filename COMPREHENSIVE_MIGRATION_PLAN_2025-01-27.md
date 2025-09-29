@@ -102,12 +102,12 @@ This document outlines the comprehensive migration plan to achieve 100% producti
 ### **DAY 3: Agent Components (8 hours)**
 **Morning (4 hours)**
 - [ ] Create `lib/agents/customer-value/` directory
-- [ ] Copy `ProspectQualificationOptimizer.ts` from assets-app
-- [ ] Copy `DealValueCalculatorOptimizer.ts` from assets-app
+- [ ] Copy `ProspectQualificationOptimizer.ts` from assets-app-ARCHIVED
+- [ ] Copy `DealValueCalculatorOptimizer.ts` from assets-app-ARCHIVED
 
 **Afternoon (4 hours)**
-- [ ] Copy `SalesMaterialsOptimizer.ts` from assets-app
-- [ ] Copy `DashboardOptimizer.ts` from assets-app
+- [ ] Copy `SalesMaterialsOptimizer.ts` from assets-app-ARCHIVED
+- [ ] Copy `DashboardOptimizer.ts` from assets-app-ARCHIVED
 - [ ] Convert JS to TypeScript and fix imports
 
 **Success Criteria:**
@@ -259,13 +259,13 @@ andru-assessment → AssessmentServiceLite → modern-platform → AssessmentSer
 
 ### **Source Files for Migration**
 - **andru-assessment**: `/Users/geter/andru/andru-assessment/`
-- **assets-app**: `/Users/geter/andru/hs-andru-test/modern-platform/assets-app/`
+- **assets-app-ARCHIVED**: `/Users/geter/andru/hs-andru-test/modern-platform/assets-app-ARCHIVED/`
 - **modern-platform**: `/Users/geter/andru/hs-andru-test/modern-platform/`
 
 ### **Key Files to Reference**
 - `andru-assessment/components/ui/ModernCard.tsx` - For UI component patterns
 - `andru-assessment/components/ProductInputForm.tsx` - For FormComponents
-- `assets-app/src/agents/` - For agent component patterns
+- `assets-app-ARCHIVED/src/agents/` - For agent component patterns
 - `modern-platform/lib/services/AssessmentService.ts` - For service patterns
 
 ### **Build Commands**

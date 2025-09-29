@@ -42,3 +42,50 @@ next-env.d.ts
 
 # mcp servers (external dependencies)
 /mcp-servers/
+
+# Backend logs and runtime files
+api-backend/logs/
+*.log
+logs/
+*.pid
+*.seed
+*.pid.lock
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.bak
+*.tmp
+
+# OS-specific files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.AppleDouble
+.LSOverride
+
+# Build caches
+.cache/
+.parcel-cache/
+.eslintcache
+
+# Test artifacts
+test-results/
+playwright-report/
+test-results.xml
+coverage/
+*.lcov
+
+# Temporary files
+tmp/
+temp/
+
+# Storybook
+storybook-static/
+
+# Backup files
+*.backup
+*.old

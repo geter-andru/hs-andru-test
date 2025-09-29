@@ -1,4 +1,4 @@
-import { airtableService } from '../../assets-app/src/services/airtableService';
+import { airtableService } from '../../app/lib/services/airtableService';
 
 // TypeScript Interfaces for AssessmentService
 export interface ProfessionalLevel {

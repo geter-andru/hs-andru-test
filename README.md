@@ -148,6 +148,58 @@ The H&S Platform is a comprehensive revenue intelligence solution that combines:
 - `POST /api/export/cost-calculator` - Export calculations
 - `POST /api/export/comprehensive` - Export full report
 
+## Validation System
+
+The platform includes a comprehensive validation pipeline to ensure code quality, security, and compatibility.
+
+### Validation Pipeline
+
+Run the complete validation suite:
+```bash
+npm run validate
+```
+
+### Validation Components
+
+#### 🔒 Security Validation
+- **Secret Detection**: Scans for exposed API keys and sensitive data
+- **Next.js Security**: Validates security best practices
+- **Environment Variables**: Ensures proper configuration
+
+#### 🔧 Compatibility Validation
+- **Next.js 15**: Framework compatibility checks
+- **React 19**: Component structure validation
+- **TypeScript**: Type safety verification
+- **App Router**: Routing structure validation
+
+#### 🌐 Deployment Validation
+- **Netlify**: Deployment configuration checks
+- **Environment**: Production environment validation
+- **Build Artifacts**: Build output verification
+
+#### 🌪️ Chaos Testing
+- **Load Testing**: 75 concurrent user simulation
+- **Memory Leaks**: Resource usage monitoring
+- **Error Handling**: Stress testing and graceful degradation
+- **Performance**: Response time and throughput analysis
+
+### Validation Agents
+
+The system includes specialized validation agents:
+
+- **Security Scanner** (`lib/validation/agents/security/`)
+- **Build Validator** (`lib/validation/agents/build/`)
+- **Compatibility Checker** (`lib/validation/agents/compatibility/`)
+- **Netlify Deployer** (`lib/validation/agents/netlify/`)
+
+### Validation Context
+
+The platform maintains a validation context file (`H_S_VALIDATION_CONTEXT.json`) that tracks:
+- Current validation status
+- Feature implementation state
+- Integration points
+- Deployment readiness
+
 ## Deployment
 
 ### Production Build
@@ -159,6 +211,17 @@ npm start
 # Backend
 npm run build (if applicable)
 npm start
+```
+
+### Pre-Deployment Validation
+```bash
+# Run full validation before deployment
+npm run validate
+
+# Check specific components
+npm run validate:security
+npm run validate:compatibility
+npm run validate:netlify
 ```
 
 ### Environment Variables

@@ -34,12 +34,14 @@ interface SessionData {
 }
 
 class ResourceAccessService implements IResourceAccessService {
-  private supabase;
   private activeSessions: Map<string, SessionData>;
 
   constructor() {
-    this.supabase = createClient();
     this.activeSessions = new Map();
+  }
+
+  private async getSupabaseClient() {
+    return await createClient();
   }
 
   /**
@@ -76,7 +78,8 @@ class ResourceAccessService implements IResourceAccessService {
     console.log(`📋 Getting access history for customer: ${customerId}`);
 
     try {
-      let query = this.supabase
+      const supabase = await this.getSupabaseClient();
+      let query = supabase
         .from('resource_access_tracking')
         .select('*')
         .eq('customer_id', customerId)
@@ -106,7 +109,8 @@ class ResourceAccessService implements IResourceAccessService {
 
     try {
       // Get resources with access counts
-      const { data: resources, error } = await this.supabase
+      const supabase = await this.getSupabaseClient();
+      const { data: resources, error } = await supabase
         .from('resources')
         .select(`
           *,
@@ -138,7 +142,8 @@ class ResourceAccessService implements IResourceAccessService {
       startDate.setDate(startDate.getDate() - days);
 
       // Get access data for the period
-      const { data: accessData, error } = await this.supabase
+      const supabase = await this.getSupabaseClient();
+      const { data: accessData, error } = await supabase
         .from('resource_access_tracking')
         .select('*')
         .eq('customer_id', customerId)
@@ -194,7 +199,8 @@ class ResourceAccessService implements IResourceAccessService {
       const startDate = new Date();
       startDate.setDate(startDate.getDate() - days);
 
-      const { data: sessions, error } = await this.supabase
+      const supabase = await this.getSupabaseClient();
+      const { data: sessions, error } = await supabase
         .from('resource_access_tracking')
         .select('*')
         .eq('customer_id', customerId)
@@ -268,7 +274,8 @@ class ResourceAccessService implements IResourceAccessService {
   // ===========================================
 
   private async createAccessRecord(request: TrackAccessRequest): Promise<void> {
-    const { error } = await this.supabase
+    const supabase = await this.getSupabaseClient();
+    const { error } = await supabase
       .from('resource_access_tracking')
       .insert({
         customer_id: request.customer_id,
@@ -283,10 +290,11 @@ class ResourceAccessService implements IResourceAccessService {
   }
 
   private async updateResourceAccessCount(resourceId: string): Promise<void> {
-    const { error } = await this.supabase
+    const supabase = await this.getSupabaseClient();
+    const { error } = await supabase
       .from('resources')
       .update({
-        access_count: this.supabase.raw('access_count + 1'),
+        access_count: supabase.raw('access_count + 1'),
         last_accessed: new Date().toISOString()
       })
       .eq('id', resourceId);

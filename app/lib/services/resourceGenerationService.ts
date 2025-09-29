@@ -46,17 +46,19 @@ interface GenerationContext {
 }
 
 class ResourceGenerationService {
-  private supabase;
   private config: ResourceGenerationConfig;
 
   constructor() {
-    this.supabase = createClient();
     this.config = {
       maxConcurrentGenerations: 3,
       retryAttempts: 3,
       retryDelayMs: 2000,
       timeoutMs: 30000
     };
+  }
+
+  private async getSupabaseClient() {
+    return await createClient();
   }
 
   /**
@@ -229,7 +231,8 @@ class ResourceGenerationService {
     console.log(`🔓 Checking unlock criteria for customer: ${customerId}, tier: ${tier}`);
 
     try {
-      const { data: criteria, error } = await this.supabase
+      const supabase = await this.getSupabaseClient();
+      const { data: criteria, error } = await supabase
         .from('resource_unlock_criteria')
         .select('*')
         .eq('resource_id', tier.toString())
@@ -262,7 +265,8 @@ class ResourceGenerationService {
     console.log(`📋 Getting available resources for customer: ${customerId}`);
 
     try {
-      const { data: resources, error } = await this.supabase
+      const supabase = await this.getSupabaseClient();
+      const { data: resources, error } = await supabase
         .from('resources')
         .select('*')
         .eq('customer_id', customerId)
@@ -287,7 +291,8 @@ class ResourceGenerationService {
     console.log(`📋 Getting resources with filters:`, request);
 
     try {
-      let query = this.supabase
+      const supabase = await this.getSupabaseClient();
+      let query = supabase
         .from('resources')
         .select('*', { count: 'exact' })
         .eq('customer_id', request.customer_id);
@@ -339,7 +344,8 @@ class ResourceGenerationService {
       const lockedResources: any[] = [];
 
       // Get all resources for the customer
-      const { data: resources, error } = await this.supabase
+      const supabase = await this.getSupabaseClient();
+      const { data: resources, error } = await supabase
         .from('resources')
         .select('*')
         .eq('customer_id', request.customer_id);
@@ -392,7 +398,8 @@ class ResourceGenerationService {
   }
 
   private async getResourceTemplate(resourceType: string): Promise<ResourceTemplate | null> {
-    const { data: template, error } = await this.supabase
+    const supabase = await this.getSupabaseClient();
+    const { data: template, error } = await supabase
       .from('resource_templates')
       .select('*')
       .eq('template_name', `${resourceType}_template`)
@@ -517,7 +524,8 @@ class ResourceGenerationService {
     context: GenerationContext,
     generatedContent: any
   ): Promise<Resource> {
-    const { data: resource, error } = await this.supabase
+    const supabase = await this.getSupabaseClient();
+    const { data: resource, error } = await supabase
       .from('resources')
       .insert({
         customer_id: context.customerId,
@@ -548,7 +556,8 @@ class ResourceGenerationService {
     context: CumulativeIntelligenceContext,
     error?: any
   ): Promise<void> {
-    await this.supabase
+    const supabase = await this.getSupabaseClient();
+    await supabase
       .from('resource_generation_logs')
       .insert({
         customer_id: customerId,

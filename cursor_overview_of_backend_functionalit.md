@@ -37928,7 +37928,7 @@ Perfect! Now I have a complete picture. Let me create a comprehensive environmen
    - **Status:** Ready for testing
 
 2. **Claude AI** ✅
-   - API Key: `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`
+   - API Key: `your_claude_api_key_here`
    - **Status:** Ready for testing
 
 3. **Airtable** ⚠️
@@ -42633,7 +42633,7 @@ ANTHROPIC_API_KEY=placeholder_key_here
 ### Database Configuration  
 ```
 NEXT_PUBLIC_SUPABASE_URL=https://molcqjsqtjbfclasynpg.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1vbGNxanNxdGpiZmNsYXN5bnBnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NTg4OTU0NywiZXhwIjoyMDcxNDY1NTQ3fQ.1k0NjvG3rA3vxEJsbacUtFtUijh9AFIBXnM0vUpxmX8
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_here
 ```
 
 ### Frontend Integration

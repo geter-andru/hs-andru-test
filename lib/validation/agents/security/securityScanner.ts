@@ -374,7 +374,9 @@ export class NextJSSecurityScanner {
       'lib/validation', // Skip our own validation code
       'SECURITY_SCANNER_ANALYSIS.md', // Skip analysis document
       '.env.local', // Skip local environment files
-      '.env.local.backup' // Skip backup environment files
+      '.env.local.backup', // Skip backup environment files
+      'assets-app', // Skip separate React app
+      'mcp-servers' // Skip MCP server directories
     ];
     
     return skipPatterns.some(pattern => filePath.includes(pattern));

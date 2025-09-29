@@ -1,15 +1,15 @@
 # Netlify Configuration for H&S Platform
-# This deploys the React app from assets-app (advanced enterprise platform)
+# This deploys the Next.js modern-platform (production-ready)
 
 [build]
-  base = "assets-app"
-  publish = "build"
+  base = "."
+  publish = "out"
   command = "npm run build"
 
 [build.environment]
   NODE_VERSION = "18"
 
-# React SPA routing - catch-all redirect
+# Next.js App Router - handle client-side routing
 [[redirects]]
   from = "/*"
   to = "/index.html"

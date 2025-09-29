@@ -1,7 +1,7 @@
-# Feature Parity Checklist: assets-app vs hs-platform
+# Feature Parity Checklist: assets-app-ARCHIVED vs hs-platform
 
 ## 🎯 **Critical Success Criteria**
-Before switching production from `assets-app` to `hs-platform`, ALL items must be ✅ verified working.
+Before switching production from `assets-app-ARCHIVED` to `hs-platform`, ALL items must be ✅ verified working.
 
 ---
 
@@ -131,7 +131,7 @@ Before switching production from `assets-app` to `hs-platform`, ALL items must b
 5. **Export test** → Export one report successfully
 
 ### **Regression Tests (Important)**
-1. **Compare side-by-side** → assets-app vs hs-platform
+1. **Compare side-by-side** → assets-app-ARCHIVED vs hs-platform
 2. **Data accuracy** → Same data displays in both
 3. **Feature completeness** → No missing functionality
 4. **Performance comparison** → hs-platform performs as well

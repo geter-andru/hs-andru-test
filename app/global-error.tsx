@@ -31,7 +31,7 @@ export default function GlobalError({
               We're sorry, but something unexpected happened. Please try again.
             </p>
 
-            {process.env.NODE_ENV === 'development' && (
+            {process.env.NEXT_PUBLIC_NODE_ENV === 'development' && (
               <details className="mb-4 text-left">
                 <summary className="cursor-pointer text-gray-500 hover:text-gray-400">
                   Error Details (Development)

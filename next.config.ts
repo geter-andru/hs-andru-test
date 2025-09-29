@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   // Output configuration for Netlify
-  // output: 'export', // Commented out to enable API routes
+  output: 'export', // Enable static export for Netlify
   
   // Trailing slash for static hosting
   trailingSlash: true,

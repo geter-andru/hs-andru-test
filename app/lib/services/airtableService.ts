@@ -472,6 +472,80 @@ class AirtableService {
       };
     }
   }
+
+  /**
+   * Get user progress data from Airtable
+   */
+  async getUserProgress(userId: string): Promise<any> {
+    try {
+      console.log('📊 Getting user progress from Airtable for user:', userId);
+
+      // For now, return mock data
+      // In production, this would call the Airtable API
+      const mockProgress = {
+        userId: userId,
+        totalPoints: 0,
+        currentScores: {
+          sales: 0,
+          marketing: 0,
+          product: 0,
+          operations: 0
+        },
+        levelProgress: {
+          currentLevel: 'foundation',
+          pointsToNext: 100,
+          progressPercentage: 0
+        },
+        toolAccess: {
+          icpAnalysis: false,
+          costCalculator: false,
+          assessment: true
+        },
+        lastUpdated: new Date().toISOString()
+      };
+
+      return mockProgress;
+
+    } catch (error) {
+      console.error('❌ Failed to get user progress:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Store user progress data in Airtable
+   */
+  async storeUserProgress(userProgress: any): Promise<BackendResponse<AirtableRecord>> {
+    try {
+      console.log('💾 Storing user progress in Airtable for user:', userProgress.userId);
+
+      // For now, return mock success
+      // In production, this would call the Airtable API
+      const mockRecord: AirtableRecord = {
+        id: `rec_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        fields: {
+          'User ID': userProgress.userId,
+          'Progress Data': JSON.stringify(userProgress),
+          'Last Updated': userProgress.lastUpdated,
+          'Status': 'Active'
+        },
+        createdTime: new Date().toISOString()
+      };
+
+      return {
+        success: true,
+        data: mockRecord,
+        message: 'User progress stored successfully'
+      };
+
+    } catch (error) {
+      console.error('❌ Failed to store user progress:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
+  }
 }
 
 // Export singleton instance

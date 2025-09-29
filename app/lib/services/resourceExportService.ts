@@ -34,17 +34,19 @@ interface ExportOptions {
 }
 
 class ResourceExportService implements IResourceExportService {
-  private supabase;
   private config: ExportConfig;
 
   constructor() {
-    this.supabase = createClient();
     this.config = {
       maxFileSizeMB: 50,
       retentionDays: 30,
       supportedFormats: ['pdf', 'docx', 'csv', 'json', 'html'],
       storagePath: 'exports/resources'
     };
+  }
+
+  private async getSupabaseClient() {
+    return await createClient();
   }
 
   /**
@@ -109,7 +111,8 @@ class ResourceExportService implements IResourceExportService {
     console.log(`📊 Getting export status: ${exportId}`);
 
     try {
-      const { data: exportRecord, error } = await this.supabase
+      const supabase = await this.getSupabaseClient();
+      const { data: exportRecord, error } = await supabase
         .from('resource_exports')
         .select('*')
         .eq('id', exportId)
@@ -165,7 +168,8 @@ class ResourceExportService implements IResourceExportService {
     console.log(`📋 Getting exports for customer: ${customerId}`);
 
     try {
-      const { data: exports, error } = await this.supabase
+      const supabase = await this.getSupabaseClient();
+      const { data: exports, error } = await supabase
         .from('resource_exports')
         .select('*')
         .eq('customer_id', customerId)
@@ -189,7 +193,8 @@ class ResourceExportService implements IResourceExportService {
     console.log('🧹 Cleaning up expired exports');
 
     try {
-      const { data: expiredExports, error: selectError } = await this.supabase
+      const supabase = await this.getSupabaseClient();
+      const { data: expiredExports, error: selectError } = await supabase
         .from('resource_exports')
         .select('id, file_path')
         .lt('expires_at', new Date().toISOString());
@@ -206,7 +211,7 @@ class ResourceExportService implements IResourceExportService {
           }
 
           // Delete export record
-          const { error: deleteError } = await this.supabase
+          const { error: deleteError } = await supabase
             .from('resource_exports')
             .delete()
             .eq('id', exportRecord.id);
@@ -234,7 +239,8 @@ class ResourceExportService implements IResourceExportService {
   // ===========================================
 
   private async getResource(resourceId: string): Promise<Resource | null> {
-    const { data: resource, error } = await this.supabase
+    const supabase = await this.getSupabaseClient();
+    const { data: resource, error } = await supabase
       .from('resources')
       .select('*')
       .eq('id', resourceId)
@@ -422,7 +428,8 @@ Generated: ${new Date(resource.created_at).toLocaleDateString()}
     const filePath = `${this.config.storagePath}/${fileName}`;
 
     // Upload to Supabase Storage
-    const { error } = await this.supabase.storage
+    const supabase = await this.getSupabaseClient();
+    const { error } = await supabase.storage
       .from('exports')
       .upload(filePath, fileData, {
         contentType: this.getContentType(format),
@@ -435,7 +442,8 @@ Generated: ${new Date(resource.created_at).toLocaleDateString()}
   }
 
   private async deleteFile(filePath: string): Promise<void> {
-    const { error } = await this.supabase.storage
+    const supabase = await this.getSupabaseClient();
+    const { error } = await supabase.storage
       .from('exports')
       .remove([filePath]);
 
@@ -448,7 +456,8 @@ Generated: ${new Date(resource.created_at).toLocaleDateString()}
     const fileName = `${exportId}.pdf`; // Default to PDF for now
     const filePath = `${this.config.storagePath}/${fileName}`;
 
-    const { data } = this.supabase.storage
+    const supabase = await this.getSupabaseClient();
+    const { data } = supabase.storage
       .from('exports')
       .getPublicUrl(filePath);
 

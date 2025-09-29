@@ -406,7 +406,7 @@ export const TrackAccessRequestSchema = z.object({
   access_type: AccessTypeSchema,
   session_id: z.string().optional(),
   user_agent: z.string().optional(),
-  ip_address: z.string().ip().optional()
+  ip_address: z.string().optional()
 });
 
 export type TrackAccessRequest = z.infer<typeof TrackAccessRequestSchema>;
